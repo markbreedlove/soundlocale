@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}Local Sounds{% endblock %}
+
+
+{% block header %}
+<div>Sounds</div>
+{% endblock %}
+
+
+{% block middle %}
+	<div id="map"></div>
+	<div id="soundlist"></div>
+{% endblock %}
+
+
+{% block underscore_templates %}
+
+<script id="sound_list_template" type="text/template">
+	<button id="update">Update</button>
+	<button id="stop">Stop</button>
+	<div id="sounds"></div>
+</script>
+
+
+<script id="sound_template" type="text/template">
+	<div class="sound-title"><%= title %></div>
+	<audio id="<%= id %>" src="<%= url %>" controls autoplay></audio>
+</script>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/jquery-2.0.3.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/underscore-min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/backbone-min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/models.js') }}"></script>
+<script src="{{ url_for('static', filename='js/views-index.js') }}"></script>
+<script>
+
+	(function() {
+		if (! ('geolocation' in navigator)) {
+			document.location(
+				'{{ url_for('static', filename='unsupported.html') }}'
+			);
+		}
+		var slView = new SoundListView();
+		$(document).ready(function() {
+			slView.render();
+		});
+	})();
+
+</script>
+{% endblock %}
+
