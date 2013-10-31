@@ -11,10 +11,12 @@ Usage examples:
 '''
 
 import peewee
+from _mysql_exceptions import IntegrityError
 import hashlib
 import re
 import simpleflake
 from base import BaseModel
+from ourexceptions import *
 
 class User(BaseModel):
     id = peewee.BigIntegerField(primary_key=True)
@@ -22,21 +24,26 @@ class User(BaseModel):
     fullname = peewee.CharField()
     password = peewee.CharField()
     email = peewee.CharField()
+    status = peewee.IntegerField()
 
 def add_user(username, fullname, password, email):
     if not re.match(r'^[a-z\d\-]+$', username, flags=re.I):
-        raise Exception('Bad username')
+        raise BadRequestError('Bad username')
     if not re.match(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$',
                     email,
                     flags=re.I):
-        raise Exception('Bad email address')
+        raise BadRequestError('Bad email address')
     if not len(password) > 7:
-        raise Exception('Password is too short')
+        raise BadRequestError('Password is too short')
     if not re.match(r'[a-z]', fullname, re.I):
-        raise Exception('Full name appears not to be complete')
-    return User.create(id=simpleflake.simpleflake(),
-                       username=username.strip(),
-                       fullname=fullname.strip(),
-                       password=hashlib.sha256(password).hexdigest(),
-                       email=email)
+        raise BadRequestError('Full name appears not to be complete')
+    try:
+        return User.create(id=simpleflake.simpleflake(),
+                           username=username.strip(),
+                           fullname=fullname.strip(),
+                           password=hashlib.sha256(password).hexdigest(),
+                           email=email,
+                           status=0)
+    except IntegrityError:
+        raise ConflictError('Account already exists')
 

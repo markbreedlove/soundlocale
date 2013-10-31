@@ -1,0 +1,7 @@
+
+To activate your account, please go to
+the following URL in your browser:
+
+{{ url }}
+
+

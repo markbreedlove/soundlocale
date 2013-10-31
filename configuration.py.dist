@@ -13,3 +13,5 @@ storage = {
     }
 }
 
+signing_key = 'change me'
+

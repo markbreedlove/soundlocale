@@ -1,12 +1,19 @@
+"""
+Example of running with Twisted:
+    $ cd <this directory>
+    $ twistd -n web --port 8080 --wsgi app.app
+
+To run with built-in Flask server:
+    $ cd <this directory>
+    $ python app.py
+"""
 
 import os
-import config
 from flask import Flask, jsonify, render_template, request
 from nfconverter import NegativeFloatConverter
 app = Flask('localsounds')
 app.url_map.converters['float'] = NegativeFloatConverter
-app.debug = True
-cfg = config.get()
+app.config.from_object('configuration')
 
 # Twisted reference: https://gist.github.com/faruken/3174638
 from twisted.application import service
@@ -19,15 +26,19 @@ from models import db
 from views.user import *
 from views.sound import *
 
-db.init(cfg['db_name'],
-        **{'passwd': cfg['db_password'],
-           'host': cfg['db_host'],
-           'user': cfg['db_user']})
+db.init(app.config['DB_NAME'],
+        **{'passwd': app.config['DB_PASSWORD'],
+           'host': app.config['DB_HOST'],
+           'user': app.config['DB_USER']})
 
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
 
 
 class Root(Resource):

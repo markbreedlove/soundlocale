@@ -6,7 +6,7 @@ from flask import jsonify, request
 import models.sound as sound
 import models.user as user
 from util import form_or_json
-from app import app, cfg
+from app import app
 from werkzeug import secure_filename
 
 
@@ -28,7 +28,7 @@ def add_sound(user_id):
     container = 'container_1'
     file = request.files['soundfile']
     file_name = secure_filename(file.filename)
-    file.save(cfg['storage'][container]['fs_path'] + file_name)
+    file.save(app.config['STORAGE'][container]['fs_path'] + file_name)
     new_sound = sound.add_sound(lat=lat, lng=lng, title=title,
                                 basename=file_name, container=container,
                                 user=the_user)
@@ -40,7 +40,7 @@ def view_sound(id):
     API:  View one sound record
     """
     s = sound.Sound.get(sound.Sound.id == id)
-    return jsonify(s.for_api(cfg['storage']))
+    return jsonify(s.for_api(app.config['STORAGE']))
 
 @app.route('/sound/<int:id>.json', methods=['DELETE'])
 def delete_sound(id):
@@ -49,7 +49,7 @@ def delete_sound(id):
     """
     s = sound.Sound.get(sound.Sound.id == id)
     container = 'container_1'
-    base_path = cfg['storage'][container]['fs_path']
+    base_path = app.config['STORAGE'][container]['fs_path']
     if not base_path.endswith('/'):
         base_path += '/'
     os.unlink(base_path + s.basename)
@@ -69,7 +69,7 @@ def edit_sound(id):
     if 'title' in request.form:
         s.title = request.form['title']
     s.save()
-    return jsonify(s.for_api(cfg['storage']))
+    return jsonify(s.for_api(app.config['STORAGE']))
 
 @app.route('/sounds/near/<float:lat>,<float:lng>,<int:meters>.json')
 def sounds_near(lat, lng, meters):
@@ -77,6 +77,7 @@ def sounds_near(lat, lng, meters):
     Retrieve sounds near coordinates, within given distance in meters.
     """
     return jsonify({'sounds': sound.sounds_near(lat, lng,
-                                                meters, cfg['storage'])})
+                                                meters,
+                                                app.config['STORAGE'])})
 
 

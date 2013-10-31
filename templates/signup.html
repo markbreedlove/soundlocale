@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block title %}Sign up :: Local Sounds{% endblock %}
+
+
+{% block header %}
+<div>Sign Up</div>
+{% endblock %}
+
+
+{% block middle %}
+<form id="signup-form">
+	<div>
+		<input name="username" id="username" class="required notempty"
+			type="text" placeholder="username" />
+		<label for="username" generated="false" class="error"></label>
+		<label for="username" class="username-taken">
+			Taken! Please try again.
+		</label>
+	</div>
+	<div>
+		<input name="fullname" id="fullname" class="required notempty"
+			type="text" placeholder="Full Name" />
+		<label for="fullname" generated="false" class="error"></label>
+	</div>
+	<div>
+		<input name="email" id="email" class="email required"
+			type="email" placeholder="email" />
+		<label for="email" generated="false" class="error"></label>
+	</div>
+	<div>
+		<input name="password" id="password" class="required notempty"
+			type="password" placeholder="password" />
+		<label for="password" generated="false" class="error"></label>
+	</div>
+	<div>
+		<input name="password2" id="password2" class="required notempty"
+			type="password" placeholder="password again" />
+		<label for="password2" generated="false" class="error"></label>
+	</div>
+</form>
+<button id="go">Go</button>
+{% endblock %}
+
+{% block underscore_templates %}
+<script id="success-template" type="text/template">
+	<p class="success">Please check your email.  You should receive a message
+	with a link to activate your account.</p>
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{
+	url_for('static', filename='js/jquery-2.0.3.min.js') }}"></script>
+<script src="{{
+	url_for('static', filename='js/jquery.validate.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/underscore-min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/backbone-min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/views-signup.js') }}"></script>
+<script>
+	var baseUrl = '{{ url_for('index') }}';
+	$(document).ready(function() {
+		new SignupView();
+	});
+</script>
+{% endblock %}
+

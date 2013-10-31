@@ -1,2 +1,3 @@
-configuration
+configuration.py
+twistd.pid
 *.pyc

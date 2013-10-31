@@ -24,15 +24,12 @@ var SoundListView = Backbone.View.extend({
         this.update();
     },
     update: function() {
-        console.log('update');
         var that = this;
         navigator.geolocation.getCurrentPosition(function(pos) {
             that.sounds.setPosition(pos);
-            console.log('pre-fetch');
             that.sounds.fetch({
                 success: that.updateList,
                 error: function(collection, xhr, options) {
-                    console.log('sounds fetch failed');
                     console.log(xhr);
                 }
             });
@@ -42,14 +39,10 @@ var SoundListView = Backbone.View.extend({
         var that = this;
         // Add new sounds, or adjust volumes of sounds that are already
         // represented.
-        console.log('updateList');
         this.sounds.each(function(sound) {
-            console.log(sound.id);
             if (sound.id in that.soundViews) {
-                console.log('update distance ' + sound.id);
                 that.soundViews[sound.id].setDistance(sound.get('distance'));
             } else {
-                console.log('new sound ' + sound.id);
                 var $div = $('<div class="sound">');
                 that.$('#sounds').append($div);
                 that.soundViews[sound.id] =
@@ -59,7 +52,6 @@ var SoundListView = Backbone.View.extend({
         // Remove views of sounds that are no longer current.
         for (var id in this.soundViews) {
             if (! this.sounds.get(id)) {
-                console.log('removing ' + id);
                 this.soundViews[id].remove();
                 delete(this.soundViews[id]);
             }            

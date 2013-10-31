@@ -1,16 +1,18 @@
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-      `id` bigint(20) UNSIGNED NOT NULL,
+      `id` bigint(20) unsigned NOT NULL,
       `username` varchar(255) NOT NULL,
       `fullname` varchar(255) NOT NULL,
-      `password` char(64) NOT NULL,
+      `password` varchar(255) NOT NULL,
       `email` varchar(255) NOT NULL,
+      `status` tinyint(2) NOT NULL DEFAULT '0',
+      `created` datetime DEFAULT NULL,
+      `modified` datetime DEFAULT NULL,
       PRIMARY KEY (`id`),
       UNIQUE KEY `x_user_username` (`username`),
       UNIQUE KEY `x_user_email` (`email`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 
 DROP TABLE IF EXISTS `sound`;
 CREATE TABLE `sound` (

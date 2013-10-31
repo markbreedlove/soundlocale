@@ -1,2 +1,12 @@
-/* TO DO */
 
+#signup-form input,
+#signup-form label {
+	display: block;
+}
+label.error {
+	color: red;	
+}
+#signup-form label.username-taken {
+    color: red;
+	display: none;
+}
