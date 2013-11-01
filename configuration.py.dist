@@ -15,3 +15,4 @@ storage = {
 
 signing_key = 'change me'
 
+SECRET_KEY = 'change me'

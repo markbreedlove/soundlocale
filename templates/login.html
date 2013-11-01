@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}Log in :: Local Sounds{% endblock %}
+
+
+{% block header %}
+<div>Log in</div>
+{% endblock %}
+
+
+{% block middle %}
+<form id="login-form">
+	<div>
+		<input name="email" id="email" type="text" placeholder="email" />
+	</div>
+	<div>
+		<input name="password" id="password" type="password"
+			placeholder="password" />
+	</div>
+</form>
+<button id="go">Go</button>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{
+	url_for('static', filename='js/jquery-2.0.3.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+<script>
+	var baseUrl = '{{ url_for('index') }}';
+	$(document).ready(function() {
+		main();
+	});
+</script>
+{% endblock %}
+

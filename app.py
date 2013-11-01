@@ -9,7 +9,7 @@ To run with built-in Flask server:
 """
 
 import os
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, session, Response
 from nfconverter import NegativeFloatConverter
 app = Flask('localsounds')
 app.url_map.converters['float'] = NegativeFloatConverter
@@ -25,6 +25,7 @@ from twisted.internet import reactor
 from models import db
 from views.user import *
 from views.sound import *
+from views.auth import *
 
 db.init(app.config['DB_NAME'],
         **{'passwd': app.config['DB_PASSWORD'],
@@ -34,12 +35,20 @@ db.init(app.config['DB_NAME'],
 
 @app.route('/')
 def index():
+    session['foo'] = 'mark'
     return render_template('index.html')
 
 @app.route('/signup')
 def signup():
-    return render_template('signup.html')
+    if 'foo' in session:
+        val = session['foo']
+    else:
+        val = 'nothing'
+    return render_template('signup.html', val=val)
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
 
 class Root(Resource):
     """

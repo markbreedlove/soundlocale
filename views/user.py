@@ -68,3 +68,4 @@ def send_activation_mail(user_id, email):
     msg.html = render_template('email.activation.html', url=url)
     mail.send(msg)
 
+

@@ -5,6 +5,7 @@ CREATE TABLE `user` (
       `username` varchar(255) NOT NULL,
       `fullname` varchar(255) NOT NULL,
       `password` varchar(255) NOT NULL,
+      `auth_token` varchar(255) DEFAULT NULL,
       `email` varchar(255) NOT NULL,
       `status` tinyint(2) NOT NULL DEFAULT '0',
       `created` datetime DEFAULT NULL,
@@ -12,7 +13,7 @@ CREATE TABLE `user` (
       PRIMARY KEY (`id`),
       UNIQUE KEY `x_user_username` (`username`),
       UNIQUE KEY `x_user_email` (`email`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
 
 DROP TABLE IF EXISTS `sound`;
 CREATE TABLE `sound` (

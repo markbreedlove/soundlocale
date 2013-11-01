@@ -25,6 +25,7 @@ class User(BaseModel):
     password = peewee.CharField()
     email = peewee.CharField()
     status = peewee.IntegerField()
+    auth_token = peewee.CharField()
 
 def add_user(username, fullname, password, email):
     if not re.match(r'^[a-z\d\-]+$', username, flags=re.I):
