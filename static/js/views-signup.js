@@ -9,8 +9,9 @@ var SignupView = Backbone.View.extend({
 	events: {
 		'click #go': 'go'
 	},
-	initialize: function() {
+	initialize: function(opts) {
 		_.bindAll(this, 'go', 'submit');
+        this.config = opts.config;
 		this.$('form').validate({
 			rules: {
 				username: { required: true, username: true },
@@ -49,7 +50,7 @@ var SignupView = Backbone.View.extend({
 			password: this.$('#password').val()
 		};
 		$.ajax({
-			url: window.baseUrl + 'users.json',
+			url: this.config.baseUrl + 'users.json',
 			method: 'POST',
 			data: data,
 			success: function() { cb('success'); },

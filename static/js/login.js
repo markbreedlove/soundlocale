@@ -1,8 +1,8 @@
 
-function main() {
+function main(config) {
     $('#go').on('click', function() {
         $.ajax({
-            url: window.baseUrl + 'session.json',
+            url: config.baseUrl + 'session.json',
             type: 'post',
             data: {
                 email: $('#email').val().trim(),

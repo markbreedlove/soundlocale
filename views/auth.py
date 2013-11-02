@@ -21,7 +21,8 @@ def auth_token():
         the_user = user.User.get(user.User.id == int(session['user_id']))
         if the_user.auth_token:
             s = Signer(app.config['SIGNING_KEY'])
-            response = jsonify(auth_token=s.sign(the_user.auth_token))
+            response = jsonify(auth_token=s.sign(the_user.auth_token),
+                               user_id=str(session['user_id']))
         else:
             response = jsonify(message='Not Found')
             response.status_code = 404
@@ -50,7 +51,8 @@ def add_session():
                 the_user.auth_token = auth_token
                 the_user.save()
             s = Signer(app.config['SIGNING_KEY'])
-            return jsonify(auth_token=s.sign(auth_token))
+            return jsonify(auth_token=s.sign(auth_token),
+                           user_id=str(the_user.id))
         else:
             raise Exception()
     except KeyError:
@@ -61,4 +63,10 @@ def add_session():
         response = jsonify(message='Unauthorized')
         response.status_code = 401
         return response
+
+@app.route('/session.json', methods=['DELETE'])
+def delete_session():
+    if 'user_id' in session:
+        del(session['user_id'])
+    return jsonify(status='OK')
 

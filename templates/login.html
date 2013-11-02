@@ -26,10 +26,14 @@
 	url_for('static', filename='js/jquery-2.0.3.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 <script>
-	var baseUrl = '{{ url_for('index') }}';
-	$(document).ready(function() {
-		main();
-	});
+	(function() {
+		var Config = {
+			baseUrl: '{{ url_for('index', _external=True) }}';
+		};
+		$(document).ready(function() {
+			main(Config);
+		});
+	})();
 </script>
 {% endblock %}
 

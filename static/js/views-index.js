@@ -11,9 +11,10 @@ var SoundListView = Backbone.View.extend({
         'click #stop': 'stop',
         'click #update': 'update'
     },
-    initialize: function() {
+    initialize: function(opts) {
         _.bindAll(this, 'render', 'stop', 'update', 'updateList');
         var that = this;
+        this.config = opts.config;
         this.soundViews = {}
         this.sounds = new LocalSounds({}, {meters: maxMeters});
         this.timer = setInterval(this.update, 10000);

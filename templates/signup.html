@@ -50,6 +50,9 @@
 {% endblock %}
 
 {% block scripts %}
+
+{{ super() }}
+
 <script src="{{
 	url_for('static', filename='js/jquery-2.0.3.min.js') }}"></script>
 <script src="{{
@@ -58,10 +61,14 @@
 <script src="{{ url_for('static', filename='js/backbone-min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/views-signup.js') }}"></script>
 <script>
-	var baseUrl = '{{ url_for('index') }}';
-	$(document).ready(function() {
-		new SignupView();
-	});
+	(function() {
+		var Config = {
+			baseUrl: '{{ url_for('index', _external=True) }}'
+		};
+		$(document).ready(function() {
+			new SignupView({config: Config});
+		});
+	})();
 </script>
 {% endblock %}
 

@@ -1,28 +1,34 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-    <head>
-        {% block head %}
-        <link rel="stylesheet"
-            href="{{ url_for('static', filename='main.css') }}" />
-        <title>{% block title %}{% endblock %}</title>
-        {% endblock %}
-    </head>
-    <body>
-        <div id="header">
-            {% block header %}{% endblock %}
-        </div>
-        <div id="middle">
-            {% block middle %}{% endblock %}
-        </div>
-        <div id="footer">
-            <!-- TODO -->
-        </div>
+	<head>
+{% block head %}
+		<link rel="stylesheet"
+			href="{{ url_for('static', filename='main.css') }}" />
+		<title>{% block title %}{% endblock %}</title>
+{% endblock %}
+	</head>
+	<body>
+		<header>
+{% block header %}{% endblock %}
+		</header>
+		<div id="middle">
+{% block middle %}{% endblock %}
+		</div>
+		<footer>
+		</footer>
 
-        {% block underscore_templates %}
-        {% endblock %}
+{% block underscore_templates %}
+<script id="accountnav-template" type="text/template">
+	<% if (username) { %>
+		<span><%= username %></span> <button id="logout-button">Log out</button>
+	<% } else { %>
+		<button id="login-button">Log in</button>
+	<% } %>
+</script>    
+{% endblock %}
 
-        {% block scripts %}
-        {% endblock %}
+{% block scripts %}
+{% endblock %}
 
-    </body>
+	</body>
 </html>

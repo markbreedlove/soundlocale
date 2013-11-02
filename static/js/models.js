@@ -1,6 +1,17 @@
+var Session = Backbone.Model.extend({
+    url: '/session.json'
+});
+
+var User = Backbone.Model.extend({
+    url: function() {
+        return '/user/' + this.id + '.json';
+    }
+});
 
 var Sound = Backbone.Model.extend({
-    url: '/sound/' + this.id + '.json'
+    url: function() {
+        return '/sound/' + this.id + '.json';
+    }
 });
 
 var LocalSounds = Backbone.Collection.extend({

@@ -5,6 +5,7 @@
 
 {% block header %}
 <div>Sounds</div>
+<div id="accountnav"></div>
 {% endblock %}
 
 
@@ -15,6 +16,8 @@
 
 
 {% block underscore_templates %}
+
+{{ super() }}
 
 <script id="sound_list_template" type="text/template">
 	<button id="update">Update</button>
@@ -28,27 +31,33 @@
 	<audio id="<%= id %>" src="<%= url %>" controls autoplay></audio>
 </script>
 
-
 {% endblock %}
 
 
 {% block scripts %}
+
+{{ super() }}
+
 <script src="{{ url_for('static', filename='js/jquery-2.0.3.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/underscore-min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/backbone-min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/models.js') }}"></script>
 <script src="{{ url_for('static', filename='js/views-index.js') }}"></script>
+<script src="{{ url_for('static', filename='js/views-accountnav.js') }}"></script>
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
 <script>
 
 	(function() {
+		var Config = {
+			baseUrl: '{{ url_for('index', _external=True) }}'
+		};
 		if (! ('geolocation' in navigator)) {
 			document.location(
 				'{{ url_for('static', filename='unsupported.html') }}'
 			);
 		}
-		var slView = new SoundListView();
 		$(document).ready(function() {
-			slView.render();
+			main(Config);
 		});
 	})();
 
