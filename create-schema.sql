@@ -12,7 +12,8 @@ CREATE TABLE `user` (
       `modified` datetime DEFAULT NULL,
       PRIMARY KEY (`id`),
       UNIQUE KEY `x_user_username` (`username`),
-      UNIQUE KEY `x_user_email` (`email`)
+      UNIQUE KEY `x_user_email` (`email`),
+      UNIQUE KEY `x_user_authtoken` (`auth_token`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8
 
 DROP TABLE IF EXISTS `sound`;

@@ -15,8 +15,10 @@ from _mysql_exceptions import IntegrityError
 import hashlib
 import re
 import simpleflake
+from itsdangerous import Signer
 from base import BaseModel
 from ourexceptions import *
+
 
 class User(BaseModel):
     id = peewee.BigIntegerField(primary_key=True)
@@ -47,4 +49,10 @@ def add_user(username, fullname, password, email):
                            status=0)
     except IntegrityError:
         raise ConflictError('Account already exists')
+
+def user_for_id_and_token(id, auth_token):
+    s = Signer(app.config['SIGNING_KEY'])
+    decoded_token = s.unsign(auth_token)
+    the_user = User.get((User.id == id) & (User.auth_token == decoded_token))
+    return the_user
 
