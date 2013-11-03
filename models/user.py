@@ -15,9 +15,9 @@ from _mysql_exceptions import IntegrityError
 import hashlib
 import re
 import simpleflake
-from itsdangerous import Signer
 from base import BaseModel
 from ourexceptions import *
+import ourcrypto
 
 
 class User(BaseModel):
@@ -50,9 +50,19 @@ def add_user(username, fullname, password, email):
     except IntegrityError:
         raise ConflictError('Account already exists')
 
-def user_for_id_and_token(id, auth_token):
-    s = Signer(app.config['SIGNING_KEY'])
-    decoded_token = s.unsign(auth_token)
-    the_user = User.get((User.id == id) & (User.auth_token == decoded_token))
+def get(id=None, auth_token=None, config=None):
+    query = User.select()
+    if auth_token:
+        try:
+            decoded_token = ourcrypto.unsign(auth_token)
+        except:
+            raise BadRequestError('Can not unsign auth token')
+        query = query.where(User.auth_token == decoded_token)
+    if id:
+        query = query.where(User.id == id)
+    if auth_token or id:
+        the_user = query.get()
+    else:
+        raise BadRequestError()
     return the_user
 

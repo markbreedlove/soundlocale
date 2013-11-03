@@ -5,7 +5,7 @@ __all__ = ['auth_token', 'add_session', 'delete_session']
 from flask import jsonify, session, request, Response
 from exceptions import KeyError
 from peewee import DoesNotExist
-from itsdangerous import Signer
+from ourcrypto import sign, unsign
 import hashlib
 from app import app
 import models.user as user
@@ -23,8 +23,7 @@ def auth_token():
     if 'user_id' in session:
         the_user = user.User.get(user.User.id == int(session['user_id']))
         if the_user.auth_token:
-            s = Signer(app.config['SIGNING_KEY'])
-            response = jsonify(auth_token=s.sign(the_user.auth_token),
+            response = jsonify(auth_token=sign(the_user.auth_token, app.config),
                                user_id=str(session['user_id']))
         else:
             response = jsonify(message='Not Found')
@@ -53,8 +52,7 @@ def add_session():
                 auth_token = str(simpleflake())
                 the_user.auth_token = auth_token
                 the_user.save()
-            s = Signer(app.config['SIGNING_KEY'])
-            return jsonify(auth_token=s.sign(auth_token),
+            return jsonify(auth_token=sign(auth_token, app.config),
                            user_id=str(the_user.id))
         else:
             raise Exception()

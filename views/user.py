@@ -3,7 +3,8 @@ __all__ = ['add_user', 'get_user', 'activation']
 
 
 from flask import jsonify, url_for, render_template, redirect
-from itsdangerous import Signer, BadSignature
+from ourcrypto import sign, unsign
+from itsdangerous import BadSignature
 from flask_mail import Mail, Message
 from peewee import DoesNotExist
 import models.user as user
@@ -45,9 +46,8 @@ def get_user(id):
 
 @app.route('/activation/<signedstring>')
 def activation(signedstring):
-    s = Signer(app.config['SIGNING_KEY'])
     try:
-        id = int(s.unsign(signedstring))
+        id = int(unsign(signedstring, app.config))
         the_user = user.User.get(user.User.id == id)
         the_user.status = 1
         the_user.save()
@@ -58,8 +58,7 @@ def activation(signedstring):
         return response
 
 def send_activation_mail(user_id, email):
-    s = Signer(app.config['SIGNING_KEY'])
-    url = url_for('activation', signedstring=s.sign(str(user_id)),
+    url = url_for('activation', signedstring=sign(str(user_id), app.config),
                   _external=True)
     mail = Mail(app)
     msg = Message('Activate your account', recipients=[email],

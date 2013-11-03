@@ -5,6 +5,8 @@ from util import boundaries, distance
 from base import BaseModel
 from user import User
 from checks import *
+from ourcrypto import unsign
+
 
 class Sound(BaseModel):
     id = peewee.BigIntegerField(primary_key=True)
@@ -59,4 +61,12 @@ def filtered_by_radius(sounds, lat, lng, meters):
         if d < meters:
             s.distance = d
             yield s
+
+def get_with_auth_token(id, auth_token, config):
+    token = unsign(auth_token, config)
+    return Sound.select() \
+                .join(User) \
+                .where((Sound.id == id) &
+                       (User.auth_token == token)) \
+                .get()
 
