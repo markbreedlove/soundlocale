@@ -40,7 +40,7 @@ var AccountNavView = Backbone.View.extend({
         });
     },
     goLogin: function() {
-        window.location = BaseUrl + 'login';
+        window.location = this.config.baseUrl + 'login';
     },
     logout: function() {
         var that = this;
