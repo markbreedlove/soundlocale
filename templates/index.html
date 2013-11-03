@@ -19,14 +19,14 @@
 
 {{ super() }}
 
-<script id="sound_list_template" type="text/template">
+<script id="local_sound_list_template" type="text/template">
 	<button id="update">Update</button>
 	<button id="stop">Stop</button>
 	<div id="sounds"></div>
 </script>
 
 
-<script id="sound_template" type="text/template">
+<script id="local_sound_template" type="text/template">
 	<div class="sound-title"><%= title %></div>
 	<audio id="<%= id %>" src="<%= url %>" controls autoplay></audio>
 </script>

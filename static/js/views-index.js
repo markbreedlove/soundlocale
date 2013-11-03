@@ -6,7 +6,7 @@ function volume(distance) {
 
 var SoundListView = Backbone.View.extend({
     el: '#soundlist',
-    template: _.template($('#sound_list_template').html()),
+    template: _.template($('#local_sound_list_template').html()),
     events: {
         'click #stop': 'stop',
         'click #update': 'update'
@@ -69,7 +69,7 @@ var SoundListView = Backbone.View.extend({
 
 
 var SoundView = Backbone.View.extend({
-    template: _.template($('#sound_template').html()),
+    template: _.template($('#local_sound_template').html()),
     initialize: function() {
         _.bindAll(this, 'render', 'setDistance');
     },
