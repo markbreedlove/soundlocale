@@ -5,7 +5,7 @@ var AccountNavView = Backbone.View.extend({
     initialize: function(opts) {
         this.config = opts.config;
         this.user = opts.user;
-        this.authToken = null;
+        this.router = opts.router;
     },
     events: {
         'click #login-button': 'goLogin',
@@ -20,7 +20,7 @@ var AccountNavView = Backbone.View.extend({
                 this.config.baseUrl + 'auth_token.json',
                 function(response) {
                     that.user.id = response.user_id;
-                    that.authToken = response.auth_token
+                    that.router.authToken = response.auth_token
                     that.renderLoggedIn();
                 })
             .fail(function() {

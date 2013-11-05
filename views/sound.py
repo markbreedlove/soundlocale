@@ -26,9 +26,10 @@ def add_sound():
     try:
         u = user.get(auth_token=request.args.get('auth_token'),
                      config=app.config)
-        lat = float(request.args.get('lat'))
-        lng = float(request.args.get('lng'))
-        title = request.args.get('title')
+        data = form_or_json()
+        lat = float(data['lat'])
+        lng = float(data['lng'])
+        title = data['title'].strip()
         container = 'container_1'
         file = request.files['soundfile']
         file_name = secure_filename(file.filename)
@@ -86,18 +87,20 @@ def edit_sound(id):
     """
     API:  Edit a sound record
 
-    Request body parameters:  auth_token (required), lat, lng, title
+    Querystring parameters: auth_token(required)
+    Request body parameters:  lat, lng, title
     """
     try:
         s = sound.get_with_auth_token(id,
-                                      request.form['auth_token'],
+                                      request.args.get('auth_token'),
                                       app.config)
-        if 'lat' in request.form:
-            s.lat = float(request.form['lat'])
-        if 'lng' in request.form:
-            s.lng = float(request.form['lng'])
-        if 'title' in request.form:
-            s.title = request.form['title'].strip()
+        data = form_or_json()
+        if 'lat' in data:
+            s.lat = float(data['lat'])
+        if 'lng' in data:
+            s.lng = float(data['lng'])
+        if 'title' in data:
+            s.title = data['title'].strip()
         s.save()
         return jsonify(s.for_api(app.config['STORAGE']))
     except sound.Sound.DoesNotExist:
@@ -118,4 +121,16 @@ def sounds_near(lat, lng, meters):
                                                 meters,
                                                 app.config['STORAGE'])})
 
+@app.route('/sounds/mine.json')
+def sounds_for_user():
+    try:
+        sounds = sound.get_all_for_auth_token(request.args.get('auth_token'),
+                                              app.config)
+        return jsonify({'sounds': sounds})
+    except sound.Sound.DoesNotExist:
+        return jsonify({'sounds': []})
+    except BadRequestError:
+        response = jsonify(message='Bad Request')
+        response.status_code = 400
+        return response
 

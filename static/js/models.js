@@ -1,6 +1,8 @@
+
 var Session = Backbone.Model.extend({
     url: '/session.json'
 });
+
 
 var User = Backbone.Model.extend({
     url: function() {
@@ -8,11 +10,17 @@ var User = Backbone.Model.extend({
     }
 });
 
+
 var Sound = Backbone.Model.extend({
     url: function() {
-        return '/sound/' + this.id + '.json';
+        url = '/sound/' + this.id + '.json';
+        if (this.authToken) {
+            url += '?auth_token=' + this.authToken;
+        }
+        return url;
     }
 });
+
 
 var LocalSounds = Backbone.Collection.extend({
     initialize: function(models, opts) {
@@ -37,3 +45,19 @@ var LocalSounds = Backbone.Collection.extend({
     }
 });
 
+
+var UserSounds = Backbone.Collection.extend({
+    initialize: function(models, opts) {
+        opts || (opts = {});
+        Backbone.Collection.prototype.initialize.call(this, models, opts);
+        opts.userId && (this.userId = opts.userId);
+        opts.authToken && (this.authToken = opts.authToken);
+    },
+    model: Sound,
+    url: function() {
+        return '/sounds/mine.json?auth_token=' + this.authToken;
+    },
+    parse: function(response) {
+        return response.sounds;
+    }
+});

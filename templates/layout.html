@@ -20,6 +20,7 @@
 {% block underscore_templates %}
 <script id="accountnav-template" type="text/template">
 	<% if (username) { %>
+        <a href="#mysounds">My sounds</a>
 		<span><%= username %></span> <button id="logout-button">Log out</button>
 	<% } else { %>
 		<button id="login-button">Log in</button>

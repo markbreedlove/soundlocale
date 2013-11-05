@@ -31,6 +31,35 @@
 	<audio id="<%= id %>" src="<%= url %>" controls autoplay></audio>
 </script>
 
+<script id="user_sound_list_template" type="text/template">
+    <button id="add-sound">Add sound</button>
+    <div id="user-sounds"></div>
+</script>
+
+<script id="user_sound_template" type="text/template">
+    <% if (id) { %>
+	<div>
+        <audio src="<%= url %>" controls></audio>
+        <button class="delete">Delete</button>
+	</div>
+    <% } %>
+    <form>
+		<% if (! id) { %>
+			<input name="soundfile" type="file">
+		<% } %>
+		<fieldset>
+			<input name="lat" type="text" value="<%= lat %>" placeholder="lat">
+			<label for="lat" generated="false" class="error"></label>
+		</fieldset>
+		<fieldset>
+			<input name="lng" type="text" value="<%= lng %>" placeholder="long">
+			<label for="lng" generated="false" class="error"></label>
+		</fieldset>
+        <input name="title" type="text" value="<%= title %>">
+    </form>
+    <button class="save">Save</button>
+</script>
+
 {% endblock %}
 
 
@@ -39,6 +68,7 @@
 {{ super() }}
 
 <script src="{{ url_for('static', filename='js/jquery-2.0.3.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.validate.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/underscore-min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/backbone-min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/models.js') }}"></script>

@@ -13,7 +13,6 @@ var SoundListView = Backbone.View.extend({
     },
     initialize: function(opts) {
         _.bindAll(this, 'render', 'stop', 'update', 'updateList');
-        var that = this;
         this.config = opts.config;
         this.soundViews = {}
         this.sounds = new LocalSounds({}, {meters: maxMeters});
@@ -86,6 +85,126 @@ var SoundView = Backbone.View.extend({
         // For now, just change the volume!
         var audio = this.$('#' + this.model.id);
         audio[0].volume = newVolume;
+    }
+});
+
+
+var UserSoundListView = Backbone.View.extend({
+    el: '#soundlist',
+    initialize: function(opts) {
+        _.bindAll(this, 'renderSoundViews');
+        this.config = opts.config;
+        this.user = opts.user;
+        this.authToken = opts.authToken;
+        this.userSounds = new UserSounds({}, {
+            userId: opts.user.id,
+            authToken: opts.authToken
+        });
+        this.userSoundViews = {};
+    },
+    template: _.template($('#user_sound_list_template').html()),
+    render: function() {
+        this.$el.html(this.template({}));
+        this.userSounds.fetch({
+            success: this.renderSoundViews,
+            error: function(collection, response, options) {
+                alert(response.statusText);
+            }
+        });
+        return this;
+    },
+    renderSoundViews: function() {
+        var that = this;
+        this.userSounds.each(function(sound) {
+            sound.authToken = that.authToken;
+            if (that.userSoundViews[sound.id]) {
+                that.userSoundViews[sound.id].render();
+            } else {
+                var div = $('<div class="user-sound">');
+                that.$el.append(div);
+                that.userSoundViews[sound.id] =
+                    new UserSoundView({
+                        el: div,
+                        model: sound,
+                        listView: that,
+                        authToken: that.authToken
+                    }).render();
+            }
+        });
+    }
+});
+
+
+var UserSoundView = Backbone.View.extend({
+    initialize: function(opts) {
+        _.bindAll(this, 'save', 'delete');
+        opts || (opts = {});
+        opts.authToken && (this.authToken = opts.authToken);
+    },
+    template: _.template($('#user_sound_template').html()),
+    render: function() {
+        var params;
+        if (this.model.isNew()) {
+            params = {id: null, lat: '', lng: '', title: ''};
+        } else {
+            params = this.model.toJSON();
+        }
+        this.$el.html(this.template(params));
+        this.$('button.save').on('click', this.save);
+        this.$('button.delete').on('click', this.delete);
+        this.$('form').validate({
+            rules: {
+                lat: { number: true },
+                lng: { number: true }
+            }
+        });
+        return this;
+    },
+    save: function() {
+        var that = this;
+        if (! this.$('form').valid()) return;
+        if (this.model.isNew()) {
+            this.$('input[name=soundfile]').fileupload({
+                url: this.config.baseUrl + '/sounds.json?auth_token=' +
+                    this.authToken,
+                dataType: 'json',
+                formData: {
+                    lat: this.$('input[name=lat]').val(),
+                    lng: this.$('input[name=lng]').val(),
+                    title: this.$('input[name=title]').val().trim()
+                }
+            }).success(function(response) {
+                that.model.id = response.id;
+                that.render();
+            }).error(function(xhr, status, message) {
+                alert(message);
+            });
+        } else {
+            this.model.save({
+                lat: this.$('input[name=lat]').val(),
+                lng: this.$('input[name=lng]').val(),
+                title: this.$('input[name=title]').val()
+            }, {
+                success: function() { /* TODO: indicate success */ },
+                error: function(model, xhr, opts) {
+                    alert('Could not save your update: ' + xhr.statusText);
+                }
+            });
+        }
+    },
+    delete: function() {
+        var that = this;
+        if (confirm('Really delete this sound?')) {
+            this.model.destroy({
+                success: function() {
+                    that.$el.slideUp();
+                    that.remove();
+                },
+                error: function(model, xhr, options) {
+                    alert('Could not delete the sound: ' + xhr.statusText);
+                }
+            });
+        }
     }
 });
 
