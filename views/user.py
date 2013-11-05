@@ -37,7 +37,7 @@ def add_user():
 def get_user(id):
     try:
         the_user = user.User.get(user.User.id == id)
-        return jsonify({'id': the_user.id, 'username': the_user.username,
+        return jsonify({'id': str(the_user.id), 'username': the_user.username,
                         'fullname': the_user.fullname, 'email': the_user.email})
     except DoesNotExist:
         response = jsonify(message='Not Found')

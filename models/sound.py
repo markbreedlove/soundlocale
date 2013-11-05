@@ -6,6 +6,7 @@ from base import BaseModel
 from user import User
 from checks import *
 from ourcrypto import unsign
+from ourexceptions import *
 
 
 class Sound(BaseModel):
@@ -25,9 +26,9 @@ class Sound(BaseModel):
         base_url = storage_config[self.container]['base_url']
         if not base_url.endswith('/'):
             base_url += '/'
-        result = {'id': self.id, 'lat': self.lat, 'lng': self.lng,
+        result = {'id': str(self.id), 'lat': self.lat, 'lng': self.lng,
                   'url': base_url + self.basename, 'title': self.title,
-                  'user_id': self.user.id}
+                  'user_id': str(self.user.id)}
         if hasattr(self, 'distance'):
             result['distance'] = self.distance
         return result
@@ -63,10 +64,17 @@ def filtered_by_radius(sounds, lat, lng, meters):
             yield s
 
 def get_with_auth_token(id, auth_token, config):
+    """Return one sound matching the given parameters"""
     token = unsign(auth_token, config)
     return Sound.select() \
                 .join(User) \
                 .where((Sound.id == id) &
                        (User.auth_token == token)) \
                 .get()
+
+def get_all_for_auth_token(auth_token, config):
+    """Return all of the sounds for a user, for API output"""
+    token = unsign(auth_token, config)
+    sounds = Sound.select().join(User).where(User.auth_token == token)
+    return [s.for_api(config['STORAGE']) for s in sounds]
 
