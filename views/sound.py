@@ -37,12 +37,12 @@ def add_sound():
         new_sound = sound.add_sound(lat=lat, lng=lng, title=title,
                                     basename=file_name, container=container,
                                     user=u)
-        return jsonify({'id': new_sound.id})
+        return jsonify(new_sound.for_api(app.config['STORAGE']))
     except user.User.DoesNotExist:
         response = jsonify(message='Unauthorized')
         response.status_code = 401
         return response
-    except BadRequestError:
+    except (ValueError, BadRequestError):
         response = jsonify(message='Bad Request')
         response.status_code = 400
         return response

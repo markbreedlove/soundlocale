@@ -54,7 +54,7 @@ def get(id=None, auth_token=None, config=None):
     query = User.select()
     if auth_token:
         try:
-            decoded_token = ourcrypto.unsign(auth_token)
+            decoded_token = ourcrypto.unsign(auth_token, config)
         except:
             raise BadRequestError('Can not unsign auth token')
         query = query.where(User.auth_token == decoded_token)
@@ -63,6 +63,6 @@ def get(id=None, auth_token=None, config=None):
     if auth_token or id:
         the_user = query.get()
     else:
-        raise BadRequestError()
+        raise BadRequestError('No auth token or id')
     return the_user
 

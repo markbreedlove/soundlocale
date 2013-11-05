@@ -103,6 +103,9 @@ var UserSoundListView = Backbone.View.extend({
         this.userSoundViews = {};
     },
     template: _.template($('#user_sound_list_template').html()),
+    events: {
+        'click #add-sound': 'addSound'
+    },
     render: function() {
         this.$el.html(this.template({}));
         this.userSounds.fetch({
@@ -117,41 +120,77 @@ var UserSoundListView = Backbone.View.extend({
         var that = this;
         this.userSounds.each(function(sound) {
             sound.authToken = that.authToken;
-            if (that.userSoundViews[sound.id]) {
-                that.userSoundViews[sound.id].render();
+            if (that.userSoundViews[sound.cid]) {
+                that.userSoundViews[sound.cid].render();
             } else {
                 var div = $('<div class="user-sound">');
                 that.$el.append(div);
-                that.userSoundViews[sound.id] =
+                that.userSoundViews[sound.cid] =
                     new UserSoundView({
                         el: div,
                         model: sound,
                         listView: that,
-                        authToken: that.authToken
+                        authToken: that.authToken,
+                        config: that.config
                     }).render();
             }
         });
+    },
+    addSound: function() {
+        var sound = new Sound({}, {authToken: this.authToken});
+        var div = $('<div class="user-sound">');
+        this.$el.append(div);
+        this.userSoundViews[sound.cid] =
+            new UserSoundView({
+                el: div,
+                model: sound,
+                listView: this,
+                authToken: this.authToken,
+                config: this.config
+            }).render();
     }
 });
 
 
 var UserSoundView = Backbone.View.extend({
     initialize: function(opts) {
-        _.bindAll(this, 'save', 'delete');
+        _.bindAll(this, 'save', 'delete', 'fillCoords');
         opts || (opts = {});
         opts.authToken && (this.authToken = opts.authToken);
+        opts.config && (this.config = opts.config);
     },
     template: _.template($('#user_sound_template').html()),
     render: function() {
+        var that = this;
         var params;
         if (this.model.isNew()) {
-            params = {id: null, lat: '', lng: '', title: ''};
+            this.$el.html(this.template({
+                id: null, lat: '', lng: '', title: ''
+            }));
+            this.$('input[name=soundfile]').fileupload({
+                url: this.config.baseUrl + 'sounds.json?auth_token=' +
+                    this.authToken,
+                dataType: 'json',
+                add: function(e, data) {
+                    that.$('button.save').off('click');
+                    data.context = that.$('button.save').click(function() {
+                        if (! that.$('form').valid()) return;
+                        console.log('uploading');
+                        data.submit();
+                    });
+                },
+                done: function(e, data) {
+                    console.log(data);
+                    that.model.set(data.result);
+                    that.render();
+                },
+            });
         } else {
-            params = this.model.toJSON();
+            this.$el.html(this.template(this.model.toJSON()));
+            this.$('button.save').on('click', this.save);
         }
-        this.$el.html(this.template(params));
-        this.$('button.save').on('click', this.save);
         this.$('button.delete').on('click', this.delete);
+        this.$('button.use-current-coords').on('click', this.fillCoords);
         this.$('form').validate({
             rules: {
                 lat: { number: true },
@@ -164,21 +203,7 @@ var UserSoundView = Backbone.View.extend({
         var that = this;
         if (! this.$('form').valid()) return;
         if (this.model.isNew()) {
-            this.$('input[name=soundfile]').fileupload({
-                url: this.config.baseUrl + '/sounds.json?auth_token=' +
-                    this.authToken,
-                dataType: 'json',
-                formData: {
-                    lat: this.$('input[name=lat]').val(),
-                    lng: this.$('input[name=lng]').val(),
-                    title: this.$('input[name=title]').val().trim()
-                }
-            }).success(function(response) {
-                that.model.id = response.id;
-                that.render();
-            }).error(function(xhr, status, message) {
-                alert(message);
-            });
+            console.log('SHOULD NOT BE REACHED');
         } else {
             this.model.save({
                 lat: this.$('input[name=lat]').val(),
@@ -205,6 +230,13 @@ var UserSoundView = Backbone.View.extend({
                 }
             });
         }
+    },
+    fillCoords: function() {
+        var that = this;
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            that.$('input[name=lat]').val(pos.coords.latitude);
+            that.$('input[name=lng]').val(pos.coords.longitude);
+        });
     }
 });
 

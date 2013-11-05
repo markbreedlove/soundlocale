@@ -57,6 +57,7 @@
 		</fieldset>
         <input name="title" type="text" value="<%= title %>">
     </form>
+    <button class="use-current-coords">Use current coordinates</button>
     <button class="save">Save</button>
 </script>
 
@@ -69,6 +70,9 @@
 
 <script src="{{ url_for('static', filename='js/jquery-2.0.3.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/jquery.validate.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.ui.widget.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.iframe-transport.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.fileupload.js') }}"></script>
 <script src="{{ url_for('static', filename='js/underscore-min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/backbone-min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/models.js') }}"></script>
