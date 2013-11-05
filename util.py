@@ -37,7 +37,7 @@ def form_or_json():
     what it is, yet.
     """
     if request.content_type == 'application/json':
-        data = request.json
+        data = request.get_json()
     else:
         data = request.form
     return data
