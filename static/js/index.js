@@ -8,25 +8,49 @@ var Router = Backbone.Router.extend({
             config: this.config,
             router: this,
             user: this.user}
-        ).render();
+        );
     },
     routes: {
         '': 'home',
         'mysounds': 'mysounds'
     },
     home: function() {
+        var that = this;
         this.slView || (this.slView = new SoundListView({config: this.config}));
-        this.slView.render();
+        this.authenticate(function() {
+            that.anView.render()
+            that.slView.render();
+        });
     },
     mysounds: function() {
-        if (! this.uslView) {
-            this.uslView = new UserSoundListView({
-                config: this.config,
-                user: this.user,
-                authToken: this.authToken
-            });
-        }
-        this.uslView.render();
+        var that = this;
+        this.authenticate(function(ok) {
+            if (ok) {
+                if (! that.uslView) {
+                    that.uslView = new UserSoundListView({
+                        config: that.config,
+                        user: that.user,
+                        authToken: that.authToken
+                    });
+                }
+                that.uslView.render();
+            } else {
+                that.navigate('', {trigger: true});
+            }
+        });
+    },
+    authenticate: function(cb) {
+        var that = this;
+        $.getJSON(
+            this.config.baseUrl + 'auth_token.json',
+            function(response) {
+                that.user.id = response.user_id;
+                that.authToken = response.auth_token
+                cb(true);
+            })
+        .fail(function() {
+            cb(false);
+        });
     }
 });
 

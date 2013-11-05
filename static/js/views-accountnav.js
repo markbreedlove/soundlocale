@@ -15,17 +15,7 @@ var AccountNavView = Backbone.View.extend({
         if (this.user.id) {
             this.renderLoggedIn();
         } else {
-            var that = this;
-            $.getJSON(
-                this.config.baseUrl + 'auth_token.json',
-                function(response) {
-                    that.user.id = response.user_id;
-                    that.router.authToken = response.auth_token
-                    that.renderLoggedIn();
-                })
-            .fail(function() {
-                that.$el.html(that.template({username: null}));
-            });
+            this.$el.html(this.template({username: null}));
         }
         return this;
     },
