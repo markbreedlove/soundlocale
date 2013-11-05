@@ -1,11 +1,18 @@
-from itsdangerous import Signer
+from itsdangerous import Signer, BadSignature
+from ourexceptions import BadRequestError
 
 
 def sign(s, config):
     signer = Signer(config['SIGNING_KEY'])
-    return signer.sign(s)
+    try:
+        return signer.sign(s)
+    except BadSignature:
+        raise BadRequestError()
 
 def unsign(s, config):
     signer = Signer(config['SIGNING_KEY'])
-    return signer.unsign(s)
+    try:
+        return signer.unsign(s)
+    except BadSignature:
+        raise BadRequestError()
 
