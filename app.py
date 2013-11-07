@@ -31,7 +31,7 @@ db.init(app.config['DB_NAME'],
         **{'passwd': app.config['DB_PASSWORD'],
            'host': app.config['DB_HOST'],
            'user': app.config['DB_USER']})
-
+db.connect()
 
 @app.route('/')
 def index():
