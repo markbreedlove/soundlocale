@@ -28,7 +28,11 @@
 
 <script id="local_sound_template" type="text/template">
 	<div class="sound-title"><%= title %></div>
-	<audio id="<%= id %>" src="<%= url %>" controls autoplay></audio>
+	<audio id="local-audio-<%= id %>" src="<%= url %>"
+		preload="none" controls></audio>
+<% if (false) { %>
+	<audio id="local-audio-<%= id %>" src="<%= url %>" autoplay controls></audio>
+<% } %>
 </script>
 
 <script id="user_sound_list_template" type="text/template">
@@ -39,7 +43,8 @@
 <script id="user_sound_template" type="text/template">
     <% if (id) { %>
 	<div>
-        <audio src="<%= url %>" controls></audio>
+		<audio id="user-audio-<%= id %>" src="<%= url %>"
+			preload="none" controls></audio>
         <button class="delete">Delete</button>
 	</div>
     <% } %>

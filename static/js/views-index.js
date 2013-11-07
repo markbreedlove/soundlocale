@@ -14,14 +14,16 @@ var SoundListView = Backbone.View.extend({
     initialize: function(opts) {
         _.bindAll(this, 'render', 'stop', 'update', 'updateList');
         this.config = opts.config;
-        this.soundViews = {}
         this.sounds = new LocalSounds({}, {meters: maxMeters});
-        this.timer = setInterval(this.update, 10000);
+        this.playing = false;
     },
     render: function() {
         var that = this;
+        this.soundViews = {}
         this.$el.html(this.template());
+        this.playing = true;
         this.update();
+        this.startTimer();
     },
     update: function() {
         var that = this;
@@ -37,27 +39,32 @@ var SoundListView = Backbone.View.extend({
     },
     updateList: function() {
         var that = this;
+        if (! this.playing) return;
         // Add new sounds, or adjust volumes of sounds that are already
         // represented.
         this.sounds.each(function(sound) {
-            if (sound.id in that.soundViews) {
-                that.soundViews[sound.id].setDistance(sound.get('distance'));
+            if (sound.cid in that.soundViews) {
+                that.soundViews[sound.cid].setDistance(sound.get('distance'));
             } else {
                 var $div = $('<div class="sound">');
                 that.$('#sounds').append($div);
-                that.soundViews[sound.id] =
+                that.soundViews[sound.cid] =
                     new SoundView({model: sound, el: $div}).render();
             }
         });
         // Remove views of sounds that are no longer current.
-        for (var id in this.soundViews) {
-            if (! this.sounds.get(id)) {
-                this.soundViews[id].remove();
-                delete(this.soundViews[id]);
+        for (var cid in this.soundViews) {
+            if (! this.sounds.get(cid)) {
+                this.soundViews[cid].remove();
+                delete(this.soundViews[cid]);
             }            
         }
     },
+    startTimer: function() {
+        this.timer = setInterval(this.update, 10000);
+    },
     stop: function() {
+        this.playing = false;
         clearInterval(this.timer);
         $audios = $('audio');
         for (var i = 0; i < $audios.length; i++) {
@@ -73,8 +80,15 @@ var SoundView = Backbone.View.extend({
         _.bindAll(this, 'render', 'setDistance');
     },
     render: function() {
+        var that = this;
         this.$el.html(this.template(this.model.toJSON()));
         this.setDistance(this.model.get('distance'));
+        // There's something like a race condition in Chrome that is solved
+        // by the following timeout, along with the <audio> element not being
+        // set to autoplay.
+        setTimeout(function() {
+            that.$('audio')[0].play();
+        }, 500);
         return this;
     },
     setDistance: function(d) {
@@ -83,8 +97,7 @@ var SoundView = Backbone.View.extend({
         this.model.set('distance', d);
         // TODO: Slew the volume from the current setting to the new one.
         // For now, just change the volume!
-        var audio = this.$('#' + this.model.id);
-        audio[0].volume = newVolume;
+        this.$('audio')[0].volume = newVolume;
     }
 });
 
@@ -121,7 +134,12 @@ var UserSoundListView = Backbone.View.extend({
         this.userSounds.each(function(sound) {
             sound.authToken = that.authToken;
             if (that.userSoundViews[sound.cid]) {
-                that.userSoundViews[sound.cid].render();
+                var v = that.userSoundViews[sound.cid];
+                if (v.$el.parentNode) {  // if it's in the document
+                    that.userSoundViews[sound.cid].render();
+                } else {                 // else, re-append it
+                    that.$el.append(v.$el);
+                }
             } else {
                 var div = $('<div class="user-sound">');
                 that.$el.append(div);
@@ -175,12 +193,10 @@ var UserSoundView = Backbone.View.extend({
                     that.$('button.save').off('click');
                     data.context = that.$('button.save').click(function() {
                         if (! that.$('form').valid()) return;
-                        console.log('uploading');
                         data.submit();
                     });
                 },
                 done: function(e, data) {
-                    console.log(data);
                     that.model.set(data.result);
                     that.render();
                 },

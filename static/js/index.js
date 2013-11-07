@@ -16,7 +16,7 @@ var Router = Backbone.Router.extend({
     },
     home: function() {
         var that = this;
-        this.slView || (this.slView = new SoundListView({config: this.config}));
+        this.slView = new SoundListView({config: this.config});
         this.authenticate(function() {
             that.anView.render()
             that.slView.render();
@@ -24,8 +24,10 @@ var Router = Backbone.Router.extend({
     },
     mysounds: function() {
         var that = this;
+        this.slView && this.slView.stop();
         this.authenticate(function(ok) {
             if (ok) {
+                that.anView.render();
                 if (! that.uslView) {
                     that.uslView = new UserSoundListView({
                         config: that.config,
