@@ -1,4 +1,4 @@
 
 import peewee
-db = peewee.MySQLDatabase(None)
+db = peewee.MySQLDatabase(None, threadlocals=True)
 
