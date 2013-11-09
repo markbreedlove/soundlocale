@@ -225,7 +225,9 @@ var UserSoundView = Backbone.View.extend({
             this.model.save({
                 lat: this.$('input[name=lat]').val(),
                 lng: this.$('input[name=lng]').val(),
-                title: this.$('input[name=title]').val()
+                title: this.$('input[name=title]').val(),
+                // For now, the only flag is looping ...
+                flags: (this.$('input[name=looping]').is(':checked') ? 1 : 0)
             }, {
                 success: function() { /* TODO: indicate success */ },
                 error: function(model, xhr, opts) {

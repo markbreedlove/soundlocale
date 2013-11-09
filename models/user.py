@@ -15,6 +15,7 @@ from _mysql_exceptions import IntegrityError
 import hashlib
 import re
 import simpleflake
+from time import time
 from base import BaseModel
 from ourexceptions import *
 import ourcrypto
@@ -28,6 +29,19 @@ class User(BaseModel):
     email = peewee.CharField()
     status = peewee.IntegerField()
     auth_token = peewee.CharField()
+    created = peewee.IntegerField()
+    modified = peewee.IntegerField()
+
+    def create(self, *args, **kwargs):
+        timestamp = int(time())
+        self.created = timestamp
+        self.modified = timestamp
+        return super(User, self).create(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        self.modified = int(time())
+        return super(User, self).save(*args, **kwargs)
+
 
 def add_user(username, fullname, password, email):
     if not re.match(r'^[a-z\d\-]+$', username, flags=re.I):

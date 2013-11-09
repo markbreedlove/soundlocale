@@ -1,5 +1,6 @@
 
 import peewee
+from time import time
 from simpleflake import simpleflake
 from util import boundaries, distance
 from base import BaseModel
@@ -7,6 +8,8 @@ from user import User
 from checks import *
 from ourcrypto import unsign
 from ourexceptions import *
+
+LOOP = 1 << 0
 
 
 class Sound(BaseModel):
@@ -17,6 +20,19 @@ class Sound(BaseModel):
     title = peewee.CharField()
     container = peewee.CharField()
     user = peewee.ForeignKeyField(User, related_name='sounds')
+    flags = peewee.IntegerField()
+    created = peewee.IntegerField()
+    modified = peewee.IntegerField()
+
+    def create(self, *args, **kwargs):
+        timestamp = int(time())
+        self.created = timestamp;
+        self.modified = timestamp;
+        return super(Sound, self).create(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        self.modified = int(time())
+        return super(Sound, self).save(*args, **kwargs)
 
     def for_api(self, storage_config):
         """
@@ -28,7 +44,8 @@ class Sound(BaseModel):
             base_url += '/'
         result = {'id': str(self.id), 'lat': self.lat, 'lng': self.lng,
                   'url': base_url + self.basename, 'title': self.title,
-                  'user_id': str(self.user.id)}
+                  'user_id': str(self.user.id), 'flags': self.flags,
+                  'created': self.created, 'modified': self.modified}
         if hasattr(self, 'distance'):
             result['distance'] = self.distance
         return result
@@ -42,6 +59,7 @@ def add_sound(lat, lng, basename, title, container, user):
                         title=title,
                         container=check_notempty(container),
                         user=user)
+
 
 def sounds_near(lat, lng, meters, storage_config):
     b = boundaries(lat, lng, meters)

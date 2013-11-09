@@ -18,8 +18,8 @@ def add_sound():
     """
     API:  Add a sound file
 
-    Querystring parameters:  lat, lng, title, auth_token
-    POST data: soundfile
+    Querystring parameters:  auth_token
+    POST data: lat, lng, title, flags, soundfile
 
     Returns ID of newly-created sound resource, as: {"id": <the id>}
     """
@@ -30,6 +30,7 @@ def add_sound():
         lat = float(data['lat'])
         lng = float(data['lng'])
         title = data['title'].strip()
+        flags = int(data['flags'])
         container = 'container_1'
         file = request.files['soundfile']
         file_name = secure_filename(file.filename)
@@ -101,6 +102,8 @@ def edit_sound(id):
             s.lng = float(data['lng'])
         if 'title' in data:
             s.title = data['title'].strip()
+        if 'flags' in data:
+            s.flags = int(data['flags'])
         s.save()
         return jsonify(s.for_api(app.config['STORAGE']))
     except sound.Sound.DoesNotExist:
