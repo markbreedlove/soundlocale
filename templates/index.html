@@ -3,12 +3,6 @@
 {% block title %}Local Sounds{% endblock %}
 
 
-{% block header %}
-<div>Sounds</div>
-<div id="accountnav"></div>
-{% endblock %}
-
-
 {% block middle %}
 	<div id="map"></div>
 	<div id="soundlist"></div>
@@ -20,50 +14,58 @@
 {{ super() }}
 
 <script id="local_sound_list_template" type="text/template">
-	<button id="update">Update</button>
-	<button id="stop">Stop</button>
+	<button id="stop" class="btn btn-default">Make it stop!</button>
 	<div id="sounds"></div>
 </script>
 
 
 <script id="local_sound_template" type="text/template">
-	<div class="sound-title"><%= title %></div>
-	<audio id="local-audio-<%= id %>" src="<%= url %>"
-		preload="none" controls></audio>
-<% if (false) { %>
-	<audio id="local-audio-<%= id %>" src="<%= url %>" autoplay controls></audio>
-<% } %>
+	<div class="sound-title panel-heading">
+		<h1 class="panel-title"><%= title %></h1>
+	</div>
+	<div class="panel-body">
+		<audio id="local-audio-<%= id %>" src="<%= url %>"
+			preload="none" controls></audio>
+	</div>
 </script>
 
 <script id="user_sound_list_template" type="text/template">
-    <button id="add-sound">Add sound</button>
+    <button id="add-sound" class="btn btn-primary">Add sound</button>
     <div id="user-sounds"></div>
 </script>
 
 <script id="user_sound_template" type="text/template">
     <% if (id) { %>
-	<div>
-		<audio id="user-audio-<%= id %>" src="<%= url %>"
-			preload="none" controls></audio>
-        <button class="delete">Delete</button>
-	</div>
+	<audio id="user-audio-<%= id %>" src="<%= url %>"
+		 preload="none" controls></audio>
     <% } %>
     <form>
 		<% if (! id) { %>
 			<input name="soundfile" type="file">
 		<% } %>
 		<fieldset>
+			<label class="reallabel" for="lat">latitude</label>
 			<input name="lat" type="text" value="<%= lat %>" placeholder="lat">
 			<label for="lat" generated="false" class="error"></label>
 		</fieldset>
 		<fieldset>
+			<label class="reallabel" for="lng">longitude</label>
 			<input name="lng" type="text" value="<%= lng %>" placeholder="long">
 			<label for="lng" generated="false" class="error"></label>
 		</fieldset>
-        <input name="title" type="text" value="<%= title %>">
+		<label class="reallabel" for="title">title</label>
+        <input name="title" type="text" value="<%= title %>"
+			placeholder="title">
     </form>
-    <button class="use-current-coords">Use current coordinates</button>
-    <button class="save">Save</button>
+	<div class="user-sound-buttons">
+	    <button class="use-current-coords btn btn-sm  btn-default">
+			Use current coordinates
+		</button>
+	    <button class="save btn btn-success btn-sm">Save</button>
+		<% if (id) { %>
+		<button class="delete btn btn-danger btn-sm">Delete</button>
+		<% } %>
+	</div>
 </script>
 
 {% endblock %}
@@ -73,7 +75,6 @@
 
 {{ super() }}
 
-<script src="{{ url_for('static', filename='js/jquery-2.0.3.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/jquery.validate.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/jquery.ui.widget.js') }}"></script>
 <script src="{{ url_for('static', filename='js/jquery.iframe-transport.js') }}"></script>

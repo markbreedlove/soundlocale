@@ -1,45 +1,65 @@
 {% extends "layout.html" %}
 
+
 {% block title %}Sign up :: Local Sounds{% endblock %}
 
 
 {% block header %}
-<div>Sign Up</div>
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+			<a class="navbar-brand" href="{{ url_for('index') }}">
+				Local Sounds
+			</a>
+        </div>
+        <div id="accountnav" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('login') }}">log in</a></li>
+                <li class="active"><a href="">sign up</a></li>
+            </ul>
+        </div>
 {% endblock %}
 
 
 {% block middle %}
 <form id="signup-form">
-	<div>
-		<input name="username" id="username" class="required notempty"
-			type="text" placeholder="username" />
+	<fieldset>
+		<input name="username" id="username" class="required form-control"
+			type="text" placeholder="username">
 		<label for="username" generated="false" class="error"></label>
 		<label for="username" class="username-taken">
 			Taken! Please try again.
 		</label>
-	</div>
-	<div>
-		<input name="fullname" id="fullname" class="required notempty"
-			type="text" placeholder="Full Name" />
+	</fieldset>
+	<fieldset>
+		<input name="fullname" id="fullname" class="required form-control"
+			type="text" placeholder="full name" />
 		<label for="fullname" generated="false" class="error"></label>
-	</div>
-	<div>
-		<input name="email" id="email" class="email required"
+	</fieldset>
+	<fieldset>
+		<input name="email" id="email" class="email required form-control"
 			type="email" placeholder="email" />
 		<label for="email" generated="false" class="error"></label>
-	</div>
-	<div>
-		<input name="password" id="password" class="required notempty"
+	</fieldset>
+	<fieldset>
+		<input name="password" id="password" class="required form-control"
 			type="password" placeholder="password" />
 		<label for="password" generated="false" class="error"></label>
-	</div>
-	<div>
-		<input name="password2" id="password2" class="required notempty"
+	</fieldset>
+	<fieldset>
+		<input name="password2" id="password2" class="required form-control"
 			type="password" placeholder="password again" />
 		<label for="password2" generated="false" class="error"></label>
-	</div>
+	</fieldset>
 </form>
-<button id="go">Go</button>
+<button id="go" class="btn btn-primary btn-block btn-signup">
+	Sign up
+</button>
 {% endblock %}
 
 {% block underscore_templates %}
@@ -50,11 +70,7 @@
 {% endblock %}
 
 {% block scripts %}
-
 {{ super() }}
-
-<script src="{{
-	url_for('static', filename='js/jquery-2.0.3.min.js') }}"></script>
 <script src="{{
 	url_for('static', filename='js/jquery.validate.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/underscore-min.js') }}"></script>

@@ -2,28 +2,41 @@
 
 {% block title %}Log in :: Local Sounds{% endblock %}
 
-
 {% block header %}
-<div>Log in</div>
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+			<a class="navbar-brand" href="{{ url_for('index') }}">
+				Local Sounds
+			</a>
+        </div>
+        <div id="accountnav" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="">log in</a></li>
+				<li><a href="{{ url_for('signup') }}">sign up</a></li>
+			</ul>
+        </div>
 {% endblock %}
 
-
 {% block middle %}
-<form id="login-form">
-	<div>
-		<input name="email" id="email" type="text" placeholder="email" />
-	</div>
-	<div>
-		<input name="password" id="password" type="password"
-			placeholder="password" />
-	</div>
+<form id="login-form" class="form-signin">
+		<input name="email" id="email" class="form-control"
+			type="text" placeholder="email" required autofocus>
+		<input name="password" id="password" class="form-control"
+			type="password" placeholder="password" required>
 </form>
-<button id="go">Go</button>
+<button id="go" class="btn btn-primary btn-block btn-login">
+	Log in
+</button>
 {% endblock %}
 
 {% block scripts %}
-<script src="{{
-	url_for('static', filename='js/jquery-2.0.3.min.js') }}"></script>
+{{ super() }}
 <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 <script>
 	(function() {

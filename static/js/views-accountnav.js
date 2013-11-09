@@ -6,16 +6,19 @@ var AccountNavView = Backbone.View.extend({
         this.config = opts.config;
         this.user = opts.user;
         this.router = opts.router;
+        this.active = null;
     },
     events: {
-        'click #login-button': 'goLogin',
         'click #logout-button': 'logout'
     },
     render: function() {
         if (this.user.id) {
             this.renderLoggedIn();
         } else {
-            this.$el.html(this.template({username: null}));
+            this.$el.html(this.template({
+                username: null,
+                active: this.active
+            }));
         }
         return this;
     },
@@ -24,13 +27,13 @@ var AccountNavView = Backbone.View.extend({
         this.user.fetch({
             success: function() {
                 that.$el.html(
-                    that.template({username: that.user.get('username')})
+                    that.template({
+                        username: that.user.get('username'),
+                        active: that.active
+                    })
                 );
             }
         });
-    },
-    goLogin: function() {
-        window.location = this.config.baseUrl + 'login';
     },
     logout: function() {
         var that = this;
@@ -38,8 +41,7 @@ var AccountNavView = Backbone.View.extend({
             url: this.config.baseUrl + 'session.json',
             type: 'delete',
             success: function() {
-                that.user.clear();
-                that.render();
+                window.location = that.config.baseUrl;
             }
         });
     }

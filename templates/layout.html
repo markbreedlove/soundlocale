@@ -1,35 +1,76 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 {% block head %}
+		<meta name="viewport"
+			  content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet"
-			href="{{ url_for('static', filename='main.css') }}" />
+			href="{{
+				url_for('static', filename='bootstrap/css/bootstrap.min.css')
+			}}">
+		<link rel="stylesheet"
+			href="{{ url_for('static', filename='main.css') }}">
 		<title>{% block title %}{% endblock %}</title>
 {% endblock %}
 	</head>
+
 	<body>
-		<header>
-{% block header %}{% endblock %}
+
+		<header class="navbar navbar-inverse" role="navigation">
+{% block header %}
+		<div class="navbar-header">
+		    <button type="button" class="navbar-toggle" data-toggle="collapse"
+			        data-target=".navbar-collapse">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		    </button>
+			<a class="navbar-brand" href="{{ url_for('index') }}">
+				Local Sounds
+			</a>
+		</div>
+		<div id="accountnav" class="collapse navbar-collapse">
+		</div>
+{% endblock %}
 		</header>
-		<div id="middle">
+
+		<div id="middle" class="container">
 {% block middle %}{% endblock %}
 		</div>
+
 		<footer>
 		</footer>
 
 {% block underscore_templates %}
 <script id="accountnav-template" type="text/template">
-	<a href="#/">home</a>
+	<ul class="nav navbar-nav">
+		<% if (username) { %>
+		<li <%= (active == 'mysounds' ? 'class="active"' : '') %>>
+			<a href="#/mysounds">my sounds</a>
+		</li>
+		<% } %>
 	<% if (username) { %>
-        <a href="#/mysounds">My sounds</a>
-		<span><%= username %></span> <button id="logout-button">Log out</button>
+		<li>
+			<a id="logout-button" href="javascript: void(null);">log out</a>
+		</li>
 	<% } else { %>
-		<button id="login-button">Log in</button>
+		<li><a href="{{ url_for('login') }}">log in</a></li>
+		<li><a href="{{ url_for('signup') }}">sign up</a></li>
+	<% } %>
+	</ul>
+	<% if (username) { %>
+	<p class="navbar-text">Hello, <%= username %>!</p>
 	<% } %>
 </script>    
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/jquery-2.0.3.min.js') }}">
+</script>
+<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}">
+</script>
 {% endblock %}
 
 	</body>

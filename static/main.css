@@ -1,12 +1,88 @@
 
-#signup-form input,
-#signup-form label {
-	display: block;
+body {
+    background: aliceblue;
 }
+
+#middle {
+    max-width: 500px;
+}
+
+#sounds,
+#user-sounds {
+    margin-top: 10px;
+}
+.user-sound audio {
+    margin: 5px;
+    position: relative;
+    width: 98%;
+}
+.user-sound form {
+    margin: 5px;
+}
+.user-sound-buttons {
+    margin: 5px;
+    text-align: right;
+}
+.user-sound label.reallabel {
+    width: 65px;
+}
+.user-sound input[name=title] {
+    width: 75%;
+}
+
 label.error {
 	color: red;	
+}
+
+#signup-form {
+    max-width: 330px;
+    margin: 0 auto 0 auto;
 }
 #signup-form label.username-taken {
     color: red;
 	display: none;
 }
+button.btn-signup {
+    max-width: 330px;
+    margin: 0 auto 0 auto;
+}
+
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+.form-signin .checkbox {
+    font-weight: normal;
+}
+.form-signin .form-control {
+    position: relative;
+    font-size: 16px;
+    height: auto;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
+.form-signin .form-control:focus {
+    z-index: 2;
+}
+.form-signin input[type="text"] {
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+button.btn-login {
+    max-width: 300px;
+    margin: 0 auto 0 auto;
+}
+

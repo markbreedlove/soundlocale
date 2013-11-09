@@ -9,10 +9,9 @@ var SoundListView = Backbone.View.extend({
     template: _.template($('#local_sound_list_template').html()),
     events: {
         'click #stop': 'stop',
-        'click #update': 'update'
     },
     initialize: function(opts) {
-        _.bindAll(this, 'render', 'stop', 'update', 'updateList');
+        _.bindAll(this, 'render', 'stop', 'updateList');
         this.config = opts.config;
         this.sounds = new LocalSounds({}, {meters: maxMeters});
         this.playing = false;
@@ -46,7 +45,7 @@ var SoundListView = Backbone.View.extend({
             if (sound.cid in that.soundViews) {
                 that.soundViews[sound.cid].setDistance(sound.get('distance'));
             } else {
-                var $div = $('<div class="sound">');
+                var $div = $('<div class="sound panel panel-default">');
                 that.$('#sounds').append($div);
                 that.soundViews[sound.cid] =
                     new SoundView({model: sound, el: $div}).render();
@@ -141,7 +140,7 @@ var UserSoundListView = Backbone.View.extend({
                     that.$el.append(v.$el);
                 }
             } else {
-                var div = $('<div class="user-sound">');
+                var div = $('<div class="user-sound panel panel-default">');
                 that.$el.append(div);
                 that.userSoundViews[sound.cid] =
                     new UserSoundView({
