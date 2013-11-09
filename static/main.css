@@ -48,7 +48,7 @@ button.btn-signup {
 }
 
 .form-signin {
-    max-width: 330px;
+    width: 280px;
     padding: 15px;
     margin: 0 auto;
 }
@@ -82,7 +82,7 @@ button.btn-signup {
     border-top-right-radius: 0;
 }
 button.btn-login {
-    max-width: 300px;
+    width: 250px;
     margin: 0 auto 0 auto;
 }
 
