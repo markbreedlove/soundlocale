@@ -60,7 +60,8 @@
         <input name="title" type="text" value="<%= title %>"
 			placeholder="title">
 		<label class="reallabel" for="looping">loop</label>
-		<input name="looping" type="checkbox">
+		<input name="looping" type="checkbox"
+			<%= (flags & 1) ? 'checked' : '' %>>
     </form>
 	<div class="user-sound-buttons">
 	    <button class="use-current-coords btn btn-sm  btn-default">
