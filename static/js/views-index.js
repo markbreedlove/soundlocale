@@ -155,7 +155,7 @@ var UserSoundListView = Backbone.View.extend({
     },
     addSound: function() {
         var sound = new Sound({}, {authToken: this.authToken});
-        var div = $('<div class="user-sound">');
+        var div = $('<div class="user-sound panel panel-default">');
         this.$el.append(div);
         this.userSoundViews[sound.cid] =
             new UserSoundView({

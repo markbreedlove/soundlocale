@@ -86,3 +86,21 @@ button.btn-login {
     margin: 0 auto 0 auto;
 }
 
+.upload-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    width: 100%;
+    height: 35px;
+    margin-bottom: 10px;
+}
+.upload-container input {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+

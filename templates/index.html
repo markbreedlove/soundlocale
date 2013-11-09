@@ -41,7 +41,10 @@
     <% } %>
     <form>
 		<% if (! id) { %>
-			<input name="soundfile" type="file">
+			<div class="btn btn-primary upload-container">
+				upload file
+				<input name="soundfile" type="file">
+			</div>
 		<% } %>
 		<fieldset>
 			<label class="reallabel" for="lat">latitude</label>
