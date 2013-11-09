@@ -141,7 +141,7 @@ var UserSoundListView = Backbone.View.extend({
                 }
             } else {
                 var div = $('<div class="user-sound panel panel-default">');
-                that.$el.append(div);
+                that.$('#user-sounds').append(div);
                 that.userSoundViews[sound.cid] =
                     new UserSoundView({
                         el: div,
@@ -156,7 +156,8 @@ var UserSoundListView = Backbone.View.extend({
     addSound: function() {
         var sound = new Sound({}, {authToken: this.authToken});
         var div = $('<div class="user-sound panel panel-default">');
-        this.$el.append(div);
+        div.css({display: 'none'});
+        this.$('#user-sounds').prepend(div);
         this.userSoundViews[sound.cid] =
             new UserSoundView({
                 el: div,
@@ -165,6 +166,7 @@ var UserSoundListView = Backbone.View.extend({
                 authToken: this.authToken,
                 config: this.config
             }).render();
+        div.slideDown();
     }
 });
 
