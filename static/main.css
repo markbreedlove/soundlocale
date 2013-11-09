@@ -4,6 +4,7 @@ body {
 }
 
 #middle {
+    margin-top: 100px;
     max-width: 500px;
 }
 
