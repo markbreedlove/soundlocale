@@ -1,3 +1,4 @@
 configuration.py
 twistd.pid
+twistd.log
 *.pyc
