@@ -14,7 +14,7 @@ CREATE TABLE `user` (
       UNIQUE KEY `x_user_username` (`username`),
       UNIQUE KEY `x_user_email` (`email`),
       UNIQUE KEY `x_user_authtoken` (`auth_token`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `sound`;
 CREATE TABLE `sound` (
@@ -32,5 +32,5 @@ CREATE TABLE `sound` (
       KEY `x_sound_user_id` (`user_id`),
       KEY `x_sound_lat_lng` (`lat`,`lng`),
       KEY `x_sound_container` (`container`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
