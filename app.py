@@ -69,7 +69,7 @@ if __name__ == '__main__':
     app.run()
 else:
     # Run with Twisted
-    application = service.Application('localsounds')
+    application = service.Application('soundlocale')
     root = Root()
     static_dir = os.path.join(os.path.abspath(__file__), 'static')
     resource = static.File(static_dir)
