@@ -11,7 +11,7 @@ To run with built-in Flask server:
 import os
 from flask import Flask, jsonify, render_template, request, session, Response
 from nfconverter import NegativeFloatConverter
-app = Flask('localsounds')
+app = Flask('soundlocale')
 app.url_map.converters['float'] = NegativeFloatConverter
 app.config.from_object('configuration')
 
