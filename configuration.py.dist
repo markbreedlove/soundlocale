@@ -1,18 +1,27 @@
-debug = True
+DEBUG = True
 
-db_host = '127.0.0.1'
-db_name = 'dbname'
-db_user = 'dbuser'
-db_password = 'password'
+DB_HOST = '127.0.0.1'
+DB_NAME = 'dbname'
+DB_USER = 'dbuser'
+DB_PASSWORD = 'password'
 
 
-storage = {
+STORAGE = {
     'container_1': {
         'base_url': 'http://localhost:8080/static/storage/',
         'fs_path': '/path/to/static/storage/'
     }
 }
 
-signing_key = 'change me'
+SIGNING_KEY = 'change me'
 
 SECRET_KEY = 'change me'
+
+MAIL_DEBUG = False
+MAIL_SERVER = 'change me'
+MAIL_PORT = 587
+MAIL_USE_TLS = True
+MAIL_USERNAME = 'you@example.com'
+MAIL_PASSWORD = 'change me'
+DEFAULT_MAIL_SENDER = 'you@example.com'
+
