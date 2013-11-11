@@ -10,6 +10,10 @@ To run with Twisted acting as middleware between the app and a webserver:
         webserver's documentation) to the port used above, and configure it
         to alias '/static' to the 'static' directory in the app.
 
+To run with passenger:
+    Copy passenger_wsgi.py.dist to passenger_wsgi.py and edit it with the
+    path to your executable.
+
 To run with built-in Flask server:
     $ cd <this directory>
     $ python app.py

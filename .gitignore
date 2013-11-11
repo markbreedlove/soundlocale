@@ -2,3 +2,4 @@ configuration.py
 twistd.pid
 twistd.log
 *.pyc
+passenger_wsgi.py
