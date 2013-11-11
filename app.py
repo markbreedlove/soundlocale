@@ -1,11 +1,19 @@
 """
-Example of running with Twisted:
-    $ cd <this directory>
-    $ twistd -n web --port 8080 --wsgi app.app
+To run with Twisted handling the app plus the static resources, see
+twistd_wsgi.py.
+
+To run with Twisted acting as middleware between the app and a webserver:
+    1.  Run Twisted like this:
+        $ cd <this directory>
+        $ twistd web --port 8080 --wsgi app.app --log /path/to/twistd.log
+    2.  Configure your webserver to reverse-proxy the application (see your
+        webserver's documentation) to the port used above, and configure it
+        to alias '/static' to the 'static' directory in the app.
 
 To run with built-in Flask server:
     $ cd <this directory>
     $ python app.py
+
 """
 
 import os
@@ -14,13 +22,6 @@ from nfconverter import NegativeFloatConverter
 app = Flask('soundlocale')
 app.url_map.converters['float'] = NegativeFloatConverter
 app.config.from_object('configuration')
-
-# Twisted reference: https://gist.github.com/faruken/3174638
-from twisted.application import service
-from twisted.web import server, static
-from twisted.web.resource import Resource
-from twisted.web.wsgi import WSGIResource
-from twisted.internet import reactor
 
 from models import db
 from views.user import *
@@ -35,6 +36,7 @@ db.connect()
 
 @app.route('/')
 def index():
+    print __name__
     session['foo'] = 'mark'
     return render_template('index.html')
 
@@ -50,29 +52,6 @@ def signup():
 def login():
     return render_template('login.html')
 
-class Root(Resource):
-    """
-    Root class for Twisted
-    """
-    wsgi = WSGIResource(reactor, reactor.getThreadPool(), app)
-
-    def getChild(self, path, request):
-        request.prepath.pop()
-        request.postpath.insert(0, path)
-        return self.wsgi
-
-    def render(self, request):
-        return self.wsgi.render(request)
-
-
 if __name__ == '__main__':
     app.run()
-else:
-    # Run with Twisted
-    application = service.Application('soundlocale')
-    root = Root()
-    static_dir = os.path.join(os.path.abspath(__file__), 'static')
-    resource = static.File(static_dir)
-    root.putChild('static', resource)
-    site = server.Site(root)
 
