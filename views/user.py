@@ -1,3 +1,9 @@
+# Copyright (C) 2013  Mark Breedlove
+# See README.md and License.txt.
+
+"""
+User-related view functions
+"""
 
 __all__ = ['add_user', 'get_user', 'activation']
 

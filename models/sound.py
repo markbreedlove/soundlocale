@@ -1,3 +1,9 @@
+# Copyright (C) 2013  Mark Breedlove
+# See README.md and License.txt.
+
+"""
+Sound peewee model and sound file-related functions
+"""
 
 import peewee
 from time import time

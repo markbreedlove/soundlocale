@@ -1,3 +1,9 @@
+# Copyright (C) 2013  Mark Breedlove
+# See README.md and License.txt.
+
+"""
+Authentication-related view functions
+"""
 
 __all__ = ['auth_token', 'add_session', 'delete_session']
 

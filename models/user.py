@@ -1,4 +1,8 @@
-'''
+# Copyright (C) 2013  Mark Breedlove
+# See README.md and License.txt.
+
+"""
+User peewee model and user-related functions.
 
 Usage examples:
 
@@ -8,7 +12,7 @@ Usage examples:
     the_user = user.User.get(user.User.username == 'name')
     print the_user.email
     new_user = user.add_user('name', 'Full Name', 'password', 'usr@domain.tld')
-'''
+"""
 
 import peewee
 from _mysql_exceptions import IntegrityError

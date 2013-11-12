@@ -1,3 +1,6 @@
+# Copyright (C) 2013  Mark Breedlove
+# See README.md and License.txt.
+
 """
 For running with the Twisted web server, with Twisted handling all of the
 static assets in /static.

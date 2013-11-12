@@ -1,3 +1,9 @@
+# Copyright (C) 2013  Mark Breedlove
+# See README.md and License.txt.
+
+"""
+Sound file-related view functions
+"""
 
 __all__ = ['add_sound', 'view_sound', 'delete_sound', 'edit_sound',
            'sounds_near']

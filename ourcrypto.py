@@ -1,3 +1,10 @@
+# Copyright (C) 2013  Mark Breedlove
+# See README.md and License.txt.
+
+"""
+Wrapper functions for signing and unsigning strings.
+"""
+
 from itsdangerous import Signer, BadSignature
 from ourexceptions import BadRequestError
 

@@ -1,3 +1,10 @@
+# Copyright (C) 2013  Mark Breedlove
+# See README.md and License.txt.
+
+"""
+Common utility functions
+"""
+
 from math import sin, asin, cos, radians, pi, pow, sqrt, atan2
 from flask import request
 
