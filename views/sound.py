@@ -10,6 +10,9 @@ __all__ = ['add_sound', 'view_sound', 'delete_sound', 'edit_sound',
 
 from flask import jsonify, request
 from os import unlink
+import simpleflake
+import mimetypes
+import re
 import models.sound as sound
 import models.user as user
 from util import form_or_json
@@ -25,7 +28,7 @@ def add_sound():
     API:  Add a sound file
 
     Querystring parameters:  auth_token
-    POST data: lat, lng, title, flags, soundfile
+    POST data: lat, lng, title, looping, soundfile
 
     Returns ID of newly-created sound resource, as: {"id": <the id>}
     """
@@ -36,14 +39,17 @@ def add_sound():
         lat = float(data['lat'])
         lng = float(data['lng'])
         title = data['title'].strip()
-        flags = int(data['flags'])
+        looping = ('looping' in data)
+        flags = 0
+        flags |= (looping and sound.LOOPING)
         container = 'container_1'
         file = request.files['soundfile']
-        file_name = secure_filename(file.filename)
+        check_filetype(file.filename)
+        file_name = unique_filename(file.filename)
         file.save(app.config['STORAGE'][container]['fs_path'] + file_name)
         new_sound = sound.add_sound(lat=lat, lng=lng, title=title,
                                     basename=file_name, container=container,
-                                    user=u)
+                                    user=u, flags=flags)
         return jsonify(new_sound.for_api(app.config['STORAGE']))
     except user.User.DoesNotExist:
         response = jsonify(message='Unauthorized')
@@ -53,6 +59,21 @@ def add_sound():
         response = jsonify(message='Bad Request')
         response.status_code = 400
         return response
+
+def check_filetype(filename):
+    t = mimetypes.guess_type(filename)
+    if t and t[0] in ('audio/mpeg', 'audio/ogg'):
+            return
+    raise BadRequestError('Bad file type')
+
+def unique_filename(orig_filename):
+    new = simpleflake.simpleflake()
+    filename = re.sub(r'^.+(\.[a-zA-Z0-9]+)$', r'%s\1' % new, orig_filename)
+    # TODO:  file extension should be assigned based on mime type, or detected
+    # file format.  Mime type should also be stored in the db record.
+    if filename == orig_filename:
+        raise BadRequestError('Bad file name')
+    return filename
 
 @app.route('/sound/<int:id>.json')
 def view_sound(id):
@@ -102,14 +123,15 @@ def edit_sound(id):
                                       request.args.get('auth_token'),
                                       app.config)
         data = form_or_json()
+        flags = 0
         if 'lat' in data:
             s.lat = float(data['lat'])
         if 'lng' in data:
             s.lng = float(data['lng'])
         if 'title' in data:
             s.title = data['title'].strip()
-        if 'flags' in data:
-            s.flags = int(data['flags'])
+        if 'looping' in data and data['looping']:
+            s.flags |= sound.LOOPING
         s.save()
         return jsonify(s.for_api(app.config['STORAGE']))
     except sound.Sound.DoesNotExist:

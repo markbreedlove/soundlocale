@@ -185,7 +185,7 @@ var UserSoundView = Backbone.View.extend({
         var params;
         if (this.model.isNew()) {
             this.$el.html(this.template({
-                id: null, lat: '', lng: '', title: '', flags: 0
+                id: null, lat: '', lng: '', title: '', looping: 0
             }));
             this.$('input[name=soundfile]').fileupload({
                 url: this.config.baseUrl + 'sounds.json?auth_token=' +
@@ -195,7 +195,13 @@ var UserSoundView = Backbone.View.extend({
                     that.$('button.save').off('click');
                     data.context = that.$('button.save').click(function() {
                         if (! that.$('form').valid()) return;
-                        data.submit();
+                        data.submit()
+                            .error(function(xhr, textStatus, errorThrown) {
+                                // TODO:  handle different sorts of errors,
+                                // once the endpoint is updated to produce
+                                // more information.
+                                alert('Could not upload this file.');
+                            });
                     });
                 },
                 done: function(e, data) {
@@ -227,8 +233,7 @@ var UserSoundView = Backbone.View.extend({
                 lat: this.$('input[name=lat]').val(),
                 lng: this.$('input[name=lng]').val(),
                 title: this.$('input[name=title]').val(),
-                // For now, the only flag is looping ...
-                flags: (this.$('input[name=looping]').is(':checked') ? 1 : 0)
+                looping: (this.$('input[name=looping]').is(':checked') ? 1 : 0)
             }, {
                 success: function() { /* TODO: indicate success */ },
                 error: function(model, xhr, opts) {

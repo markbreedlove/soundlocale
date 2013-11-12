@@ -25,7 +25,7 @@
 	</div>
 	<div class="panel-body">
 		<audio id="local-audio-<%= id %>" src="<%= url %>"
-			preload="none" controls <%= (flags & 1) ? 'loop' : '' %>></audio>
+			preload="none" controls <%= looping ? 'loop' : '' %>></audio>
 	</div>
 </script>
 
@@ -60,8 +60,7 @@
         <input name="title" type="text" value="<%= title %>"
 			placeholder="title">
 		<label class="reallabel" for="looping">loop</label>
-		<input name="looping" type="checkbox"
-			<%= (flags & 1) ? 'checked' : '' %>>
+		<input name="looping" type="checkbox" <%= looping ? 'checked' : '' %>>
     </form>
 	<div class="user-sound-buttons">
 	    <button class="use-current-coords btn btn-sm  btn-default">

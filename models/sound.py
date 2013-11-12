@@ -15,7 +15,7 @@ from checks import *
 from ourcrypto import unsign
 from ourexceptions import *
 
-LOOP = 1 << 0
+LOOPING = 1 << 0
 
 
 class Sound(BaseModel):
@@ -44,14 +44,14 @@ class Sound(BaseModel):
             base_url += '/'
         result = {'id': str(self.id), 'lat': self.lat, 'lng': self.lng,
                   'url': base_url + self.basename, 'title': self.title,
-                  'user_id': str(self.user.id), 'flags': self.flags,
+                  'user_id': str(self.user.id), 'looping': self.flags & LOOPING,
                   'created': self.created, 'modified': self.modified}
         if hasattr(self, 'distance'):
             result['distance'] = self.distance
         return result
 
 
-def add_sound(lat, lng, basename, title, container, user):
+def add_sound(lat, lng, basename, title, container, user, flags):
     timestamp = int(time())
     return Sound.create(id=simpleflake(),
                         lat=check_float(lat),
@@ -60,6 +60,7 @@ def add_sound(lat, lng, basename, title, container, user):
                         title=title,
                         container=check_notempty(container),
                         user=user,
+                        flags=flags,
                         created=timestamp,
                         modified=timestamp)
 
