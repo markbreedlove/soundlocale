@@ -155,6 +155,7 @@ var UserSoundListView = Backbone.View.extend({
     },
     addSound: function() {
         var sound = new Sound({}, {authToken: this.authToken});
+        sound.authToken = this.authToken;
         var div = $('<div class="user-sound panel panel-default">');
         div.css({display: 'none'});
         this.$('#user-sounds').prepend(div);
@@ -184,7 +185,7 @@ var UserSoundView = Backbone.View.extend({
         var params;
         if (this.model.isNew()) {
             this.$el.html(this.template({
-                id: null, lat: '', lng: '', title: ''
+                id: null, lat: '', lng: '', title: '', flags: 0
             }));
             this.$('input[name=soundfile]').fileupload({
                 url: this.config.baseUrl + 'sounds.json?auth_token=' +
