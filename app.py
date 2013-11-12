@@ -1,3 +1,6 @@
+# Copyright (C) 2013  Mark Breedlove
+# See README.md and License.txt.
+
 """
 To run with Twisted handling the app plus the static resources, see
 twistd_wsgi.py.
@@ -17,7 +20,6 @@ To run with passenger:
 To run with built-in Flask server:
     $ cd <this directory>
     $ python app.py
-
 """
 
 import os
