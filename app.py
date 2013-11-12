@@ -42,8 +42,6 @@ db.connect()
 
 @app.route('/')
 def index():
-    print __name__
-    session['foo'] = 'mark'
     return render_template('index.html')
 
 @app.route('/signup')
