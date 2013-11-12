@@ -9,6 +9,7 @@ mysql-python twisted, simpleflake, flask_mail
 
 To do
 -----
+- [ ] Transcode files: need both m4a and ogg.
 - [ ] Web Audio API for mobile Safari (et al?) support.
 - [ ] Main page:  list users who have sounds in the current area.  Choose which
   user to listen to.
