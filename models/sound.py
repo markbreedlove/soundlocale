@@ -30,12 +30,6 @@ class Sound(BaseModel):
     created = peewee.IntegerField()
     modified = peewee.IntegerField()
 
-    def create(self, *args, **kwargs):
-        timestamp = int(time())
-        self.created = timestamp;
-        self.modified = timestamp;
-        return super(Sound, self).create(*args, **kwargs)
-
     def save(self, *args, **kwargs):
         self.modified = int(time())
         return super(Sound, self).save(*args, **kwargs)
@@ -58,13 +52,16 @@ class Sound(BaseModel):
 
 
 def add_sound(lat, lng, basename, title, container, user):
+    timestamp = int(time())
     return Sound.create(id=simpleflake(),
                         lat=check_float(lat),
                         lng=check_float(lng),
                         basename=check_notempty(basename),
                         title=title,
                         container=check_notempty(container),
-                        user=user)
+                        user=user,
+                        created=timestamp,
+                        modified=timestamp)
 
 
 def sounds_near(lat, lng, meters, storage_config):
