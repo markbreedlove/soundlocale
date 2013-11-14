@@ -36,12 +36,6 @@ class User(BaseModel):
     created = peewee.IntegerField()
     modified = peewee.IntegerField()
 
-    def create(self, *args, **kwargs):
-        timestamp = int(time())
-        self.created = timestamp
-        self.modified = timestamp
-        return super(User, self).create(*args, **kwargs)
-
     def save(self, *args, **kwargs):
         self.modified = int(time())
         return super(User, self).save(*args, **kwargs)
@@ -58,13 +52,16 @@ def add_user(username, fullname, password, email):
         raise BadRequestError('Password is too short')
     if not re.match(r'[a-z]', fullname, re.I):
         raise BadRequestError('Full name appears not to be complete')
+    timestamp = int(time())
     try:
         return User.create(id=simpleflake.simpleflake(),
                            username=username.strip(),
                            fullname=fullname.strip(),
                            password=hashlib.sha256(password).hexdigest(),
                            email=email,
-                           status=0)
+                           status=0,
+                           created=timestamp,
+                           modified=timestamp)
     except IntegrityError:
         raise ConflictError('Account already exists')
 
