@@ -8,10 +8,11 @@ User-related view functions
 __all__ = ['add_user', 'get_user', 'activation']
 
 
-from flask import jsonify, url_for, render_template, redirect
+from flask import jsonify, url_for, render_template, redirect, session
 from ourcrypto import sign, unsign
 from itsdangerous import BadSignature
 from flask_mail import Mail, Message
+from simpleflake import simpleflake
 from peewee import DoesNotExist
 import models.user as user
 from ourexceptions import *
@@ -56,7 +57,9 @@ def activation(signedstring):
         id = int(unsign(signedstring, app.config))
         the_user = user.User.get(user.User.id == id)
         the_user.status = 1
+        the_user.auth_token = str(simpleflake())
         the_user.save()
+        session['user_id'] = id
         return redirect(url_for('index'))
     except (BadSignature, DoesNotExist):
         response = jsonify(message='Bad Request')
