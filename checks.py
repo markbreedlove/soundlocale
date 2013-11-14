@@ -1,4 +1,4 @@
-# Copyright (C) 2013  Mark Breedlove
+# Copyright (C) 2013  Mark Breedlove and Tom Xi
 # See README.md and License.txt.
 
 __all__ = ['check_float', 'check_int', 'check_notempty']

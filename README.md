@@ -1,6 +1,13 @@
 Soundlocale
 ===========
 
+Soundlocale is a web application for playing a mix of geotagged sounds based on
+the listener's present coordinates.  As the listener travels through a space,
+the sounds adjust in volume based on their proximity.
+
+This project was proposed at the September, 2013 Hacking Arts conference in
+Cambridge, MA by Tom Xi, and has been developed thus far by Mark Breedlove.
+
 
 Dependencies
 ------------
@@ -30,6 +37,7 @@ License
 -------
 
     Copyright (C) 2013  Mark Breedlove (http://www.markbreedlove.com/)
+    and Tom Xi
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
