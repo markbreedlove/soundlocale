@@ -16,6 +16,9 @@ from ourcrypto import unsign
 from ourexceptions import *
 
 LOOPING = 1 << 0
+MP3     = 1 << 5
+M4A     = 1 << 6
+OGG     = 1 << 7
 
 
 class Sound(BaseModel):
@@ -45,7 +48,9 @@ class Sound(BaseModel):
         result = {'id': str(self.id), 'lat': self.lat, 'lng': self.lng,
                   'url': base_url + self.basename, 'title': self.title,
                   'user_id': str(self.user.id), 'looping': self.flags & LOOPING,
-                  'created': self.created, 'modified': self.modified}
+                  'mp3': self.flags & MP3, 'm4a': self.flags & M4A,
+                  'ogg': self.flags & OGG, 'created': self.created,
+                  'modified': self.modified}
         if hasattr(self, 'distance'):
             result['distance'] = self.distance
         return result

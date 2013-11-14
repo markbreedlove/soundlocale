@@ -11,10 +11,11 @@ __all__ = ['add_sound', 'view_sound', 'delete_sound', 'edit_sound',
 from flask import jsonify, request
 from os import unlink
 import simpleflake
-import mimetypes
 import re
+import audiotools
 import models.sound as sound
 import models.user as user
+# from util import form_or_json, async
 from util import form_or_json
 from app import app
 from werkzeug import secure_filename
@@ -44,36 +45,89 @@ def add_sound():
         flags |= (looping and sound.LOOPING)
         container = 'container_1'
         file = request.files['soundfile']
-        check_filetype(file.filename)
-        file_name = unique_filename(file.filename)
-        file.save(app.config['STORAGE'][container]['fs_path'] + file_name)
+        type = filetype(file.filename)
+        (filename, base) = unique_filename(file.filename)
+        fullpath = app.config['STORAGE'][container]['fs_path'] + filename
+        file.save(fullpath)
+
+        flags |= transcode(fullpath, type)
+
         new_sound = sound.add_sound(lat=lat, lng=lng, title=title,
-                                    basename=file_name, container=container,
+                                    basename=str(base), container=container,
                                     user=u, flags=flags)
         return jsonify(new_sound.for_api(app.config['STORAGE']))
     except user.User.DoesNotExist:
         response = jsonify(message='Unauthorized')
         response.status_code = 401
         return response
-    except (ValueError, BadRequestError):
+    except (ValueError, BadRequestError) as e:
         response = jsonify(message='Bad Request')
-        response.status_code = 400
+        response.status = '400 ' + e.message
         return response
 
-def check_filetype(filename):
-    t = mimetypes.guess_type(filename)
-    if t and t[0] in ('audio/mpeg', 'audio/ogg'):
-            return
-    raise BadRequestError('Bad file type')
+def filetype(filename):
+    pat  = re.compile(r"\.(mp3|ogg|m4a|aif|wav)$", re.I)
+    m = pat.search(filename)
+    if (m):
+        return m.groups(0)[0].lower()
+    else:
+        raise BadRequestError('Bad file type')
 
 def unique_filename(orig_filename):
-    new = simpleflake.simpleflake()
-    filename = re.sub(r'^.+(\.[a-zA-Z0-9]+)$', r'%s\1' % new, orig_filename)
+    base = simpleflake.simpleflake()
+    filename = re.sub(r'^.+(\.[a-zA-Z0-9]+)$', r'%s\1' % base, orig_filename)
     # TODO:  file extension should be assigned based on mime type, or detected
     # file format.  Mime type should also be stored in the db record.
     if filename == orig_filename:
         raise BadRequestError('Bad file name')
-    return filename
+    return (filename, base)
+
+def transcode(filename, orig_file_type):
+    """
+    Hand off the transcoding of the audio file to the appropriate function for
+    its filetype.  Return a bitmask indicating what types of derivatives are
+    in storage.
+    """
+    try:
+        _transcode(filename, orig_file_type)
+        if orig_file_type == 'mp3':
+            return sound.MP3 | sound.OGG
+        else:
+            return sound.M4A | sound.OGG
+    except ValueError as e:
+        app.logger.warn('Could not process file: ' + e.message)
+        raise BadRequestError('Could not process this file')
+
+# @async
+def _transcode(filename, orig_file_type):
+    """
+    Actually transcode the audio file, depending on its source format.
+    It would be nice if this could run asynchronously, but error handling
+    becomes much more involved that way.
+    """
+    if orig_file_type == 'mp3':
+        transcode_to_ogg(filename)
+    elif orig_file_type == 'm4a':
+        transcode_to_ogg(filename)
+    elif orig_file_type == 'ogg':
+        transcode_to_m4a(filename)
+    elif orig_file_type == 'aif':
+        transcode_to_ogg(filename)
+        transcode_to_m4a(filename)
+        unlink(filename)
+    elif orig_file_type == 'wav':
+        transcode_to_ogg(filename)
+        transcode_to_m4a(filename)
+        unlink(filename)
+
+def transcode_to_ogg(filename):
+    dest_name = re.sub(r'^(.*)\.[a-z34]+$', r'\1.ogg', filename)
+    audiotools.open(filename).convert(dest_name, audiotools.VorbisAudio)
+
+def transcode_to_m4a(filename):
+    dest_name = re.sub(r'^(.*)\.[a-z34]+$', r'\1.m4a', filename)
+    audiotools.open(filename).convert(dest_name, audiotools.M4AAudio)
+
 
 @app.route('/sound/<int:id>.json')
 def view_sound(id):
@@ -95,10 +149,7 @@ def delete_sound(id):
                                       request.args.get('auth_token'),
                                       app.config)
         container = 'container_1'
-        base_path = app.config['STORAGE'][container]['fs_path']
-        if not base_path.endswith('/'):
-            base_path += '/'
-        unlink(base_path + s.basename)
+        delete_files(s.basename, s.container, s.flags)
         s.delete_instance()
         return jsonify({'status': 'OK'})
     except sound.Sound.DoesNotExist:
@@ -110,6 +161,17 @@ def delete_sound(id):
         response.status_code = 400
         return response
 
+def delete_files(basename, container, flags):
+    base_path = app.config['STORAGE'][container]['fs_path']
+    if not base_path.endswith('/'):
+        base_path += '/'
+    if flags & sound.MP3:
+        unlink(base_path + basename + '.mp3')
+    if flags & sound.M4A:
+        unlink(base_path + basename + '.m4a')
+    if flags & sound.OGG:
+        unlink(base_path + basename + '.ogg')
+    
 @app.route('/sound/<int:id>.json', methods=['PUT'])
 def edit_sound(id):
     """

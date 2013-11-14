@@ -6,6 +6,8 @@ Dependencies
 ------------
 Install the following Python packages with pip:  flask, peewee, MySQLdb,
 mysql-python twisted, simpleflake, flask_mail
+Install audiotools and the binaries for transcoding Vorbis, AAC, and MP3: faac,
+faad, mpg123, oggdec, oggenc.
 
 To do
 -----

@@ -24,8 +24,18 @@
 		<h1 class="panel-title"><%= title %></h1>
 	</div>
 	<div class="panel-body">
-		<audio id="local-audio-<%= id %>" src="<%= url %>"
-			preload="none" controls <%= looping ? 'loop' : '' %>></audio>
+		<audio id="local-audio-<%= id %>" preload="none"
+			controls <%= looping ? 'loop' : '' %>>
+			<% if (mp3) { %>
+			<source src="<%= url %>.mp3" type="audio/mpeg">
+			<% } %>
+			<% if (m4a) { %>
+			<source src="<%= url %>.m4a" type="audio/mp4">
+			<% } %>
+			<% if (ogg) { %>
+			<source src="<%= url %>.ogg" type="audio/ogg">
+			<% } %>
+		</audio>
 	</div>
 </script>
 
@@ -36,8 +46,17 @@
 
 <script id="user_sound_template" type="text/template">
     <% if (id) { %>
-	<audio id="user-audio-<%= id %>" src="<%= url %>"
-		 preload="none" controls></audio>
+	<audio id="user-audio-<%= id %>" preload="none" controls>
+		<% if (mp3) { %>
+		<source src="<%= url %>.mp3" type="audio/mpeg">
+		<% } %>
+		<% if (m4a) { %>
+		<source src="<%= url %>.m4a" type="audio/mp4">
+		<% } %>
+		<% if (ogg) { %>
+		<source src="<%= url %>.ogg" type="audio/ogg">
+		<% } %>
+	</audio>
     <% } %>
     <form>
 		<% if (! id) { %>

@@ -200,7 +200,7 @@ var UserSoundView = Backbone.View.extend({
                                 // TODO:  handle different sorts of errors,
                                 // once the endpoint is updated to produce
                                 // more information.
-                                alert('Could not upload this file.');
+                                alert(errorThrown);
                             });
                     });
                 },

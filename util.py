@@ -6,6 +6,7 @@ Common utility functions
 """
 
 from math import sin, asin, cos, radians, pi, pow, sqrt, atan2
+from threading import Thread
 from flask import request
 
 m_per_degree = 111.0 * 1000.0
@@ -48,4 +49,14 @@ def form_or_json():
     else:
         data = request.form
     return data
+
+def async(f):
+    """
+    Decorator for making the given function run asynchronously
+    """
+    # See: http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xi-email-support
+    def wrapper(*args, **kwargs):
+        t = Thread(target=f, args=args, kwargs=kwargs)
+        t.start()
+    return wrapper
 
