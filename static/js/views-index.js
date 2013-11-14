@@ -11,7 +11,7 @@ var SoundListView = Backbone.View.extend({
         'click #stop': 'stop',
     },
     initialize: function(opts) {
-        _.bindAll(this, 'render', 'stop', 'updateList');
+        _.bindAll(this, 'render', 'stop', 'update', 'updateList');
         this.config = opts.config;
         this.sounds = new LocalSounds({}, {meters: maxMeters});
         this.playing = false;
