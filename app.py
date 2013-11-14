@@ -28,17 +28,22 @@ from nfconverter import NegativeFloatConverter
 app = Flask('soundlocale')
 app.url_map.converters['float'] = NegativeFloatConverter
 app.config.from_object('configuration')
-
+import logging
 from models import db
 from views.user import *
 from views.sound import *
 from views.auth import *
+
+log_file_handler = logging.FileHandler(app.config['LOGFILE'])
+log_file_handler.setLevel(logging.DEBUG)
+app.logger.addHandler(log_file_handler)
 
 db.init(app.config['DB_NAME'],
         **{'passwd': app.config['DB_PASSWORD'],
            'host': app.config['DB_HOST'],
            'user': app.config['DB_USER']})
 db.connect()
+
 
 @app.route('/')
 def index():
