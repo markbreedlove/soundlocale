@@ -25,7 +25,7 @@ CREATE TABLE `sound` (
       `title` varchar(255) DEFAULT NULL,
       `container` varchar(25) DEFAULT NULL,
       `user_id` bigint(20) unsigned NOT NULL,
-      `flags` tinyint(4) NOT NULL DEFAULT '0',
+      `flags` int(10) NOT NULL DEFAULT '0',
       `created` int(10) DEFAULT NULL,
       `modified` int(10) DEFAULT NULL,
       PRIMARY KEY (`id`),
