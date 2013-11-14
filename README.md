@@ -18,8 +18,8 @@ faad, mpg123, oggdec, oggenc.
 
 To do
 -----
-- [ ] Transcode files: need both m4a and ogg.
-- [ ] Web Audio API for mobile Safari (et al?) support.
+- [x] Transcode files: need both m4a and ogg.
+- [ ] Web Audio API for mobile Safari support.
 - [ ] Main page:  list users who have sounds in the current area.  Choose which
   user to listen to.
 - [ ] User list page:  Show users, click on user & see map of sounds.
