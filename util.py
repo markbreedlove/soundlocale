@@ -44,7 +44,7 @@ def form_or_json():
     There's probably a better way to do this in Flask, but I don't know
     what it is, yet.
     """
-    if request.content_type == 'application/json':
+    if request.content_type.startswith('application/json'):
         data = request.get_json()
     else:
         data = request.form
