@@ -254,7 +254,7 @@ var UserSoundListView = Backbone.View.extend({
 
 var UserSoundView = Backbone.View.extend({
     initialize: function(opts) {
-        _.bindAll(this, 'save', 'delete', 'fillCoords');
+        _.bindAll(this, 'save', 'deleteSound', 'fillCoords');
         opts || (opts = {});
         opts.authToken && (this.authToken = opts.authToken);
         opts.config && (this.config = opts.config);
@@ -293,7 +293,7 @@ var UserSoundView = Backbone.View.extend({
             this.$el.html(this.template(this.model.toJSON()));
             this.$('button.save').on('click', this.save);
         }
-        this.$('button.delete').on('click', this.delete);
+        this.$('button.delete').on('click', this.deleteSound);
         this.$('button.use-current-coords').on('click', this.fillCoords);
         this.$('form').validate({
             rules: {
@@ -322,7 +322,7 @@ var UserSoundView = Backbone.View.extend({
             });
         }
     },
-    delete: function() {
+    deleteSound: function() {
         var that = this;
         if (confirm('Really delete this sound?')) {
             this.model.destroy({
