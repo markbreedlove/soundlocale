@@ -47,9 +47,12 @@ class Sound(BaseModel):
             base_url += '/'
         result = {'id': str(self.id), 'lat': self.lat, 'lng': self.lng,
                   'url': base_url + self.basename, 'title': self.title,
-                  'user_id': str(self.user.id), 'looping': self.flags & LOOPING,
-                  'mp3': self.flags & MP3, 'm4a': self.flags & M4A,
-                  'ogg': self.flags & OGG, 'created': self.created,
+                  'user_id': str(self.user.id),
+                  'looping': int(self.flags & LOOPING > 0),
+                  'mp3': int(self.flags & MP3 > 0),
+                  'm4a': int(self.flags & M4A > 0),
+                  'ogg': int(self.flags & OGG > 0),
+                  'created': self.created,
                   'modified': self.modified}
         if hasattr(self, 'distance'):
             result['distance'] = self.distance

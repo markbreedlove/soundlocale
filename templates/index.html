@@ -14,7 +14,12 @@
 {{ super() }}
 
 <script id="local_sound_list_template" type="text/template">
-	<button id="stop" class="btn btn-default">Make it stop!</button>
+	<button id="play-button" class="btn btn-default" style="display: none;">
+		Play
+	</button>
+	<button id="stop-button" class="btn btn-default">
+		Stop
+	</button>
 	<div id="sounds"></div>
 </script>
 
@@ -24,18 +29,6 @@
 		<h1 class="panel-title"><%= title %></h1>
 	</div>
 	<div class="panel-body">
-		<audio id="local-audio-<%= id %>" preload="none"
-			controls <%= looping ? 'loop' : '' %>>
-			<% if (mp3) { %>
-			<source src="<%= url %>.mp3" type="audio/mpeg">
-			<% } %>
-			<% if (m4a) { %>
-			<source src="<%= url %>.m4a" type="audio/mp4">
-			<% } %>
-			<% if (ogg) { %>
-			<source src="<%= url %>.ogg" type="audio/ogg">
-			<% } %>
-		</audio>
 	</div>
 </script>
 
@@ -115,13 +108,20 @@
 		var Config = {
 			baseUrl: '{{ url_for('index', _external=True) }}'
 		};
+		var unsupUrl = '{{ url_for('static', filename='unsupported.html', _external=True) }}';
 		if (! ('geolocation' in navigator)) {
-			document.location(
-				'{{ url_for('static', filename='unsupported.html') }}'
-			);
+			document.location = unsupUrl;
+		}
+		var ac;
+		try {
+			window.AudioContext =
+				window.AudioContext || window.webkitAudioContext;
+			ac = new AudioContext();
+		} catch (e) {
+			document.location = unsupUrl;
 		}
 		$(document).ready(function() {
-			main(Config);
+			main(Config, ac);
 		});
 	})();
 

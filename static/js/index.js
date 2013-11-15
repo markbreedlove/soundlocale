@@ -4,6 +4,7 @@ var Router = Backbone.Router.extend({
         this.config = opts.config;
         this.user = new User();
         this.authToken = null;
+        this.audioContext = opts.audioContext;
         this.anView = new AccountNavView({
             config: this.config,
             router: this,
@@ -16,7 +17,10 @@ var Router = Backbone.Router.extend({
     },
     home: function() {
         var that = this;
-        this.slView = new SoundListView({config: this.config});
+        this.slView = new SoundListView({
+            config: this.config,
+            audioContext: this.audioContext
+        });
         this.authenticate(function() {
             that.anView.active = 'home';
             that.anView.render()
@@ -59,8 +63,8 @@ var Router = Backbone.Router.extend({
 });
 
 
-function main(config) {
-    new Router({config: config});
+function main(config, audioContext) {
+    new Router({config: config, audioContext: audioContext});
     Backbone.history.start();
 }
 

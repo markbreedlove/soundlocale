@@ -1,6 +1,7 @@
 var maxMeters = 85;
 
 function volume(distance) {
+    // TODO:  this is linear; try equal-power gain?
     return 1.0 - (distance / maxMeters);
 }
 
@@ -8,21 +9,24 @@ var SoundListView = Backbone.View.extend({
     el: '#soundlist',
     template: _.template($('#local_sound_list_template').html()),
     events: {
-        'click #stop': 'stop',
+        'click #play-button': 'play',
+        'click #stop-button': 'stop'
     },
     initialize: function(opts) {
-        _.bindAll(this, 'render', 'stop', 'update', 'updateList');
+        _.bindAll(this, 'render', 'play', 'stop', 'update', 'updateList',
+            'decLoadingCount');
         this.config = opts.config;
         this.sounds = new LocalSounds({}, {meters: maxMeters});
-        this.playing = false;
+        this.audioContext = opts.audioContext;
+        this.loadingCount = 0;
+        this.sources = {};
+        this.gainNodes = {};
     },
     render: function() {
         var that = this;
         this.soundViews = {}
         this.$el.html(this.template());
-        this.playing = true;
         this.update();
-        this.startTimer();
     },
     update: function() {
         var that = this;
@@ -38,7 +42,6 @@ var SoundListView = Backbone.View.extend({
     },
     updateList: function() {
         var that = this;
-        if (! this.playing) return;
         // Add new sounds, or adjust volumes of sounds that are already
         // represented.
         this.sounds.each(function(sound) {
@@ -47,47 +50,77 @@ var SoundListView = Backbone.View.extend({
             } else {
                 var $div = $('<div class="sound panel panel-default">');
                 that.$('#sounds').append($div);
+                that.sources[sound.cid] =
+                    that.audioContext.createBufferSource();
+                that.sources[sound.cid].loop = sound.get('looping');
+                that.gainNodes[sound.cid] =
+                    that.audioContext.createGain();
+                that.sources[sound.cid].connect(
+                    that.gainNodes[sound.cid]
+                );
+                that.gainNodes[sound.cid].connect(
+                    that.audioContext.destination
+                );
                 that.soundViews[sound.cid] =
-                    new SoundView({model: sound, el: $div}).render();
+                    new SoundView({
+                        model: sound,
+                        el: $div,
+                        audioContext: that.audioContext,
+                        source: that.sources[sound.cid],
+                        gainNode: that.gainNodes[sound.cid]
+                    }).render(that.decLoadingCount);
+                that.loadingCount++;
             }
         });
         // Remove views of sounds that are no longer current.
         for (var cid in this.soundViews) {
             if (! this.sounds.get(cid)) {
+                delete(sources[cid]);
+                delete(gainNodes[cid]);
                 this.soundViews[cid].remove();
                 delete(this.soundViews[cid]);
             }            
         }
     },
+    decLoadingCount: function() {
+        this.loadingCount--;
+        if (this.loadingCount == 0) {
+            this.$('#play-button').show();
+        }
+    },
     startTimer: function() {
         this.timer = setInterval(this.update, 10000);
     },
+    play: function() {
+        this.startTimer();
+        _.each(this.soundViews, function(v) {
+            v.play();
+        });
+    },
     stop: function() {
-        this.playing = false;
         clearInterval(this.timer);
-        $audios = $('audio');
-        for (var i = 0; i < $audios.length; i++) {
-            $audios[i].pause();
-        }
+        _.each(this.soundViews, function(v) {
+            v.stop();
+        });
     }
 });
 
 
 var SoundView = Backbone.View.extend({
     template: _.template($('#local_sound_template').html()),
-    initialize: function() {
-        _.bindAll(this, 'render', 'setDistance');
+    initialize: function(opts) {
+        _.bindAll(this, 'render', 'setDistance', 'play', 'stop');
+        this.audioContext = opts.audioContext;
+        this.source = opts.source;
+        this.gainNode = opts.gainNode;
+        this.buffer = null;
+        this.loaded = false;
     },
-    render: function() {
+    render: function(cb) {
         var that = this;
         this.$el.html(this.template(this.model.toJSON()));
         this.setDistance(this.model.get('distance'));
-        // There's something like a race condition in Chrome that is solved
-        // by the following timeout, along with the <audio> element not being
-        // set to autoplay.
-        setTimeout(function() {
-            that.$('audio')[0].play();
-        }, 500);
+        this.loadBuffer(cb);
         return this;
     },
     setDistance: function(d) {
@@ -96,7 +129,54 @@ var SoundView = Backbone.View.extend({
         this.model.set('distance', d);
         // TODO: Slew the volume from the current setting to the new one.
         // For now, just change the volume!
-        this.$('audio')[0].volume = newVolume;
+        this.gainNode.gain.value = newVolume;
+    },
+    loadBuffer: function(cb) {
+        var that = this;
+        var ext;
+        var ua = navigator.userAgent.toLowerCase();
+        var ff = (ua.indexOf('firefox') > -1);
+        var chrome = (ua.indexOf('chrome') > -1);
+        if (chrome || ff) {
+            ext = '.ogg';
+        } else {
+            if (this.model.get('m4a')) {
+                ext = '.m4a';
+            } else {
+                ext = '.mp3';
+            }
+        }
+        var url = this.model.get('url') + ext;
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.responseType = 'arraybuffer';
+        request.onload = function() {
+            that.audioContext.decodeAudioData(
+                request.response,
+                function(buf) {
+                    that.source.buffer = buf;
+                    cb();
+                },
+                function() {
+                    console.log('Could not decode audio from ' + url);
+                }
+            );
+        };
+        request.send();
+    },
+    play: function() {
+        this.source.start(0);
+    },
+    stop: function() {
+        this.source.stop(0);
+        // In case the user wants to play it again, need to create a new
+        // source.  This is the way it's designed to work, the source being
+        // analagous to a playhead
+        var newsource = this.audioContext.createBufferSource();
+        newsource.buffer = this.source.buffer;
+        newsource.loop = this.source.loop;
+        newsource.connect(this.gainNode);
+        this.source = newsource;
     }
 });
 
