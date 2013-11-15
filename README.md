@@ -20,6 +20,7 @@ To do
 -----
 - [x] Transcode files: need both m4a and ogg.
 - [ ] Web Audio API for mobile Safari support.
+- [ ] Progress spinners and bars
 - [ ] Main page:  list users who have sounds in the current area.  Choose which
   user to listen to.
 - [ ] User list page:  Show users, click on user & see map of sounds.
