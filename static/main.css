@@ -31,6 +31,9 @@ body {
     width: 75%;
 }
 
+#soundlist button:first-child {
+    margin-right: 10px;
+}
 label.error {
 	color: red;	
 }
