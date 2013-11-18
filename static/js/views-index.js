@@ -26,22 +26,25 @@ var SoundListView = Backbone.View.extend({
         var that = this;
         this.soundViews = {}
         this.$el.html(this.template());
-        this.update();
     },
-    update: function() {
+    update: function(cb) {
         var that = this;
+        cb || (cb = null);
         navigator.geolocation.getCurrentPosition(function(pos) {
             that.sounds.setPosition(pos);
             that.sounds.fetch({
-                success: that.updateList,
+                success: function() {
+                    that.updateList(cb);
+                },
                 error: function(collection, xhr, options) {
                     console.log(xhr);
                 }
             });
         });
     },
-    updateList: function() {
+    updateList: function(cb) {
         var that = this;
+        cb || (cb = null);
         // Add new sounds, or adjust volumes of sounds that are already
         // represented.
         this.sounds.each(function(sound) {
@@ -81,6 +84,9 @@ var SoundListView = Backbone.View.extend({
                 delete(this.soundViews[cid]);
             }            
         }
+        if (cb) {
+            cb();
+        }
     },
     decLoadingCount: function() {
         this.loadingCount--;
@@ -92,9 +98,12 @@ var SoundListView = Backbone.View.extend({
         this.timer = setInterval(this.update, 10000);
     },
     play: function() {
-        this.startTimer();
-        _.each(this.soundViews, function(v) {
-            v.play();
+        var that = this;
+        this.update(function() {
+            that.startTimer();
+            _.each(that.soundViews, function(v) {
+                v.play();
+            });
         });
     },
     stop: function() {
