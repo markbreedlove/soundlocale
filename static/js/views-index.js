@@ -13,8 +13,7 @@ var SoundListView = Backbone.View.extend({
         'click #stop-button': 'stop'
     },
     initialize: function(opts) {
-        _.bindAll(this, 'render', 'play', 'stop', 'update', 'updateList',
-            'decLoadingCount');
+        _.bindAll(this, 'render', 'play', 'stop', 'update', 'updateList')
         this.config = opts.config;
         this.sounds = new LocalSounds({}, {meters: maxMeters});
         this.audioContext = opts.audioContext;
@@ -56,8 +55,13 @@ var SoundListView = Backbone.View.extend({
                 that.sources[sound.cid] =
                     that.audioContext.createBufferSource();
                 that.sources[sound.cid].loop = sound.get('looping');
-                that.gainNodes[sound.cid] =
-                    that.audioContext.createGain();
+                if ('createGainNode' in that.audioContext) {
+                    that.gainNodes[sound.cid] =
+                        that.audioContext.createGainNode();
+                } else {
+                    that.gainNodes[sound.cid] =
+                        that.audioContext.createGain();
+                }
                 that.sources[sound.cid].connect(
                     that.gainNodes[sound.cid]
                 );
@@ -71,8 +75,7 @@ var SoundListView = Backbone.View.extend({
                         audioContext: that.audioContext,
                         source: that.sources[sound.cid],
                         gainNode: that.gainNodes[sound.cid]
-                    }).render(that.decLoadingCount);
-                that.loadingCount++;
+                    }).render();
             }
         });
         // Remove views of sounds that are no longer current.
@@ -99,10 +102,12 @@ var SoundListView = Backbone.View.extend({
     },
     play: function() {
         var that = this;
-        this.update(function() {
-            that.startTimer();
-            _.each(that.soundViews, function(v) {
-                v.play();
+        beep(function() {
+            that.update(function() {
+                that.startTimer();
+                _.each(that.soundViews, function(v) {
+                    v.play();
+                });
             });
         });
     },
@@ -125,11 +130,11 @@ var SoundView = Backbone.View.extend({
         this.buffer = null;
         this.loaded = false;
     },
-    render: function(cb) {
+    render: function() {
         var that = this;
         this.$el.html(this.template(this.model.toJSON()));
         this.setDistance(this.model.get('distance'));
-        this.loadBuffer(cb);
+        this.loadBuffer();
         return this;
     },
     setDistance: function(d) {
@@ -140,22 +145,9 @@ var SoundView = Backbone.View.extend({
         // For now, just change the volume!
         this.gainNode.gain.value = newVolume;
     },
-    loadBuffer: function(cb) {
+    loadBuffer: function() {
         var that = this;
-        var ext;
-        var ua = navigator.userAgent.toLowerCase();
-        var ff = (ua.indexOf('firefox') > -1);
-        var chrome = (ua.indexOf('chrome') > -1);
-        if (chrome || ff) {
-            ext = '.ogg';
-        } else {
-            if (this.model.get('m4a')) {
-                ext = '.m4a';
-            } else {
-                ext = '.mp3';
-            }
-        }
-        var url = this.model.get('url') + ext;
+        var url = this.model.get('url') + soundExt();
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.responseType = 'arraybuffer';
@@ -164,7 +156,6 @@ var SoundView = Backbone.View.extend({
                 request.response,
                 function(buf) {
                     that.source.buffer = buf;
-                    cb();
                 },
                 function() {
                     console.log('Could not decode audio from ' + url);
@@ -174,10 +165,18 @@ var SoundView = Backbone.View.extend({
         request.send();
     },
     play: function() {
-        this.source.start(0);
+        if ('noteOn' in this.source) {
+            this.source.noteOn(0);
+        } else {
+            this.source.start(0);
+        }
     },
     stop: function() {
-        this.source.stop(0);
+        if ('noteOff' in this.source) {
+            this.source.noteOff(0);
+        } else {
+            this.source.stop(0);
+        }
         // In case the user wants to play it again, need to create a new
         // source.  This is the way it's designed to work, the source being
         // analagous to a playhead

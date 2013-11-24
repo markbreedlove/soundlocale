@@ -105,22 +105,66 @@
 <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 <script>
 
+	function soundExt() {
+		var ua = navigator.userAgent.toLowerCase();
+		var ff = (ua.indexOf('firefox') > -1);
+		var chrome = (ua.indexOf('chrome') > -1);
+		var ext;
+		if (chrome || ff) {
+			ext = '.ogg';
+		} else {
+			ext = '.m4a';
+		}
+		return ext;
+	}
+
+	var unsupUrl = '{{ url_for('static', filename='unsupported.html', _external=True) }}';
+	try {
+		window.AudioContext =
+			window.AudioContext || window.webkitAudioContext;
+		ac = new AudioContext();
+	} catch (e) {
+		document.location = unsupUrl;
+	}
+	if (! ('geolocation' in navigator)) {
+		document.location = unsupUrl;
+	}
+	var ac;
+	var beepsource = ac.createBufferSource();
+	var beepreq = new XMLHttpRequest();
+	beepsource.connect(ac.destination);
+	beepreq.open(
+		'GET',
+		'{{ url_for('index', _external=True) }}static/2-beep' + soundExt(),
+		true
+	);
+	beepreq.responseType = 'arraybuffer';
+	beepreq.onload = function() {
+		ac.decodeAudioData(
+			beepreq.response,
+			function(buf) {
+				beepsource.buffer = buf;
+			},
+			function() {
+				alert('Could not initialize audio');
+			}
+		);
+	};
+	beepreq.send();
+
+	function beep(cb) {
+		if ('noteOn' in beepsource) {
+			beepsource.noteOn(0);
+		} else {
+			beepsource.start(0);
+		}
+		cb();
+	}
+
 	(function() {
 		var Config = {
 			baseUrl: '{{ url_for('index', _external=True) }}'
 		};
-		var unsupUrl = '{{ url_for('static', filename='unsupported.html', _external=True) }}';
-		if (! ('geolocation' in navigator)) {
-			document.location = unsupUrl;
-		}
-		var ac;
-		try {
-			window.AudioContext =
-				window.AudioContext || window.webkitAudioContext;
-			ac = new AudioContext();
-		} catch (e) {
-			document.location = unsupUrl;
-		}
 		$(document).ready(function() {
 			main(Config, ac);
 		});
