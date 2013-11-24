@@ -11,10 +11,11 @@ Cambridge, MA by Tom Xi, and has been developed thus far by Mark Breedlove.
 
 Dependencies
 ------------
-Install the following Python packages with pip:  flask, peewee, MySQLdb,
-mysql-python twisted, simpleflake, flask_mail
-Install audiotools and the binaries for transcoding Vorbis, AAC, and MP3: faac,
-faad, mpg123, oggdec, oggenc.
+Install the following Python packages with pip:  flask, mysql-python,
+peewee, twisted, simpleflake, flask_mail.
+Install the binaries for transcoding Vorbis, AAC, and MP3: faac, faad, mpg123,
+oggdec, and oggenc; then, install audiotools (audiotools.sourceforge.net)
+
 
 To do
 -----
