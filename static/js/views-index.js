@@ -141,6 +141,7 @@ var SoundView = Backbone.View.extend({
         var oldVolume = volume(this.model.get('distance'));
         var newVolume = volume(d);
         this.model.set('distance', d);
+        this.$('.distance').html(Math.round(d));
         // TODO: Slew the volume from the current setting to the new one.
         // For now, just change the volume!
         this.gainNode.gain.value = newVolume;

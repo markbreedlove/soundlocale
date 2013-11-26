@@ -30,8 +30,8 @@ var LocalSounds = Backbone.Collection.extend({
     },
     model: Sound,
     url: function() {
-        return  '/sounds/near/' + this.lat + ',' + this.lng + ',' +
-            this.meters + '.json';
+        return  '/sounds/near/' + this.lat.toFixed(6) + ',' +
+            this.lng.toFixed(6) + ',' + this.meters + '.json';
     },
     parse: function(response) {
         return response.sounds;
