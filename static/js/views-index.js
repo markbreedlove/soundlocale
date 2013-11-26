@@ -1,4 +1,4 @@
-var maxMeters = 85;
+var maxMeters = 9;
 
 function volume(distance) {
     // TODO:  this is linear; try equal-power gain?
@@ -75,16 +75,17 @@ var SoundListView = Backbone.View.extend({
                         audioContext: that.audioContext,
                         source: that.sources[sound.cid],
                         gainNode: that.gainNodes[sound.cid]
-                    }).render();
+                    }).render().play();
             }
         });
         // Remove views of sounds that are no longer current.
         for (var cid in this.soundViews) {
             if (! this.sounds.get(cid)) {
-                delete(sources[cid]);
-                delete(gainNodes[cid]);
+                this.soundViews[cid].stop();
                 this.soundViews[cid].remove();
                 delete(this.soundViews[cid]);
+                delete(this.sources[cid]);
+                delete(this.gainNodes[cid]);
             }            
         }
         if (cb) {
@@ -171,6 +172,7 @@ var SoundView = Backbone.View.extend({
         } else {
             this.source.start(0);
         }
+        return this;
     },
     stop: function() {
         if ('noteOff' in this.source) {
@@ -186,6 +188,7 @@ var SoundView = Backbone.View.extend({
         newsource.loop = this.source.loop;
         newsource.connect(this.gainNode);
         this.source = newsource;
+        return this;
     }
 });
 
