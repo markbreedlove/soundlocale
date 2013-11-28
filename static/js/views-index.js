@@ -1,4 +1,4 @@
-var maxMeters = 9;
+var maxMeters = 50;
 
 function volume(distance) {
     // TODO:  this is linear; try equal-power gain?
