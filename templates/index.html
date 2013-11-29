@@ -57,7 +57,7 @@
     <form>
 		<% if (! id) { %>
 			<div class="btn btn-primary upload-container">
-				upload file
+				<span class="upload-button-text">upload file</span>
 				<input name="soundfile" type="file">
 			</div>
 		<% } %>
@@ -85,6 +85,14 @@
 		<% if (id) { %>
 		<button class="delete btn btn-danger btn-sm">Delete</button>
 		<% } %>
+	</div>
+</script>
+
+<script id="status-success-template" type="text/template">
+	<div class="alert alert-success alert-dismissable">
+		<button type="button" class="close" data-dismiss="alert"
+				aria-hidden="true">&times;</button>
+		<%= message %>
 	</div>
 </script>
 

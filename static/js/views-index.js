@@ -289,13 +289,16 @@ var UserSoundView = Backbone.View.extend({
                 dataType: 'json',
                 add: function(e, data) {
                     that.$('button.save').off('click');
+                    $uploadBtn = that.$('.upload-button-text');
                     data.context = that.$('button.save').click(function() {
                         if (! that.$('form').valid()) return;
+                        $uploadBtn.html('processing ...');
                         data.submit()
                             .error(function(xhr, textStatus, errorThrown) {
                                 // TODO:  handle different sorts of errors,
                                 // once the endpoint is updated to produce
                                 // more information.
+                                $uploadBtn.html('upload file');
                                 alert(errorThrown);
                             });
                     });
@@ -331,12 +334,20 @@ var UserSoundView = Backbone.View.extend({
                 title: this.$('input[name=title]').val(),
                 looping: (this.$('input[name=looping]').is(':checked') ? 1 : 0)
             }, {
-                success: function() { /* TODO: indicate success */ },
+                success: function() {
+                    console.log('success');
+                    that._statusSuccess(that.$('.user-sound-buttons'), 'Saved');
+                },
                 error: function(model, xhr, opts) {
                     alert('Could not save your update: ' + xhr.statusText);
                 }
             });
         }
+    },
+    _statusSuccess: function($element, message) {
+        var t = _.template($('#status-success-template').html());
+        var html = t({message: message});
+        $element.prepend(html);
     },
     deleteSound: function() {
         var that = this;
