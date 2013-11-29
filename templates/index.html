@@ -14,7 +14,8 @@
 {{ super() }}
 
 <script id="local_sound_list_template" type="text/template">
-	<button id="play-button" class="btn btn-default">
+	<button id="play-button" type="button" class="btn btn-default"
+			data-loading-text="Loading...">
 		Play
 	</button>
 	<button id="stop-button" class="btn btn-default">

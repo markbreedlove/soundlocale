@@ -101,10 +101,13 @@ var SoundListView = Backbone.View.extend({
     startTimer: function() {
         this.timer = setInterval(this.update, 10000);
     },
-    play: function() {
+    play: function(event) {
         var that = this;
+        $(event.target).button('toggle');
+        $(event.target).button('loading');
         beep(function() {
             that.update(function() {
+                $(event.target).button('reset');  // Remove "Loading..."
                 that.startTimer();
                 _.each(that.soundViews, function(v) {
                     v.play();
@@ -113,6 +116,7 @@ var SoundListView = Backbone.View.extend({
         });
     },
     stop: function() {
+        this.$('#play-button').button('toggle');
         clearInterval(this.timer);
         _.each(this.soundViews, function(v) {
             v.stop();
