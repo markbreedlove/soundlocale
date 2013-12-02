@@ -22,6 +22,7 @@ To do
 - [x] Transcode files: need both m4a and ogg.
 - [x] Web Audio API for mobile Safari support.
 - [x] Progress indicators
+- [ ] Fix login response for incorrect password.  (And ensure correct HTTP responses everywhere, in general.)
 - [ ] Main page:  list users who have sounds in the current area.  Choose which
   user to listen to.
 - [ ] User list page:  Show users, click on user & see map of sounds.
