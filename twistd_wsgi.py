@@ -1,4 +1,4 @@
-# Copyright (C) 2013  Mark Breedlove and Tom Xi
+# Copyright (C) 2013  Mark Breedlove and Qingyang Xi
 # See README.md and License.txt.
 
 """
