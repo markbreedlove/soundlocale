@@ -11,8 +11,8 @@ Cambridge, MA by Qingyang Xi, and has been developed thus far by Mark Breedlove.
 
 Dependencies
 ------------
-Install the following Python packages with pip:  flask, mysql-python,
-peewee, twisted, simpleflake, flask\_mail.
+Install the dependencies in requirements.txt:
+`$ pip install -r requirements.txt`
 Install the binaries for transcoding Vorbis, AAC, and MP3: faac, faad, mpg123,
 oggdec, and oggenc; then, install audiotools (audiotools.sourceforge.net)
 
