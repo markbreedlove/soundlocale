@@ -12,7 +12,7 @@ Cambridge, MA by Qingyang Xi, and has been developed thus far by Mark Breedlove.
 Dependencies
 ------------
 Install the following Python packages with pip:  flask, mysql-python,
-peewee, twisted, simpleflake, flask_mail.
+peewee, twisted, simpleflake, flask\_mail.
 Install the binaries for transcoding Vorbis, AAC, and MP3: faac, faad, mpg123,
 oggdec, and oggenc; then, install audiotools (audiotools.sourceforge.net)
 
@@ -23,12 +23,12 @@ To do
 - [x] Web Audio API for mobile Safari support.
 - [x] Progress indicators
 - [ ] Fix login response for incorrect password.  (And ensure correct HTTP responses everywhere, in general.)
+- [ ] Maps!  Geolocate uploaded sounds.  Show positions of sounds on home page.
 - [ ] Main page:  list users who have sounds in the current area.  Choose which
   user to listen to.
 - [ ] User list page:  Show users, click on user & see map of sounds.
 - [ ] Cloud storage
 - [ ] Asynchronous transcoding
-- [ ] Maps!  Develop main page, which is temporary.
 
 The future
 ----------
