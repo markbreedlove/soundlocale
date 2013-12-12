@@ -24,6 +24,7 @@ To do
 - [x] Transcode files: need both m4a and ogg.
 - [x] Web Audio API for mobile Safari support.
 - [x] Progress indicators
+- [ ] Add Vagrant and Ansible files to ease installation, demoing, development
 - [ ] Support Gevent
 - [ ] Fix login response for incorrect password.  (And ensure correct HTTP responses everywhere, in general.)
 - [ ] Maps!  Geolocate uploaded sounds.  Show positions of sounds on home page.
