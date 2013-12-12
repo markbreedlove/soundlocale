@@ -12,7 +12,9 @@ Cambridge, MA by Qingyang Xi, and has been developed thus far by Mark Breedlove.
 Dependencies
 ------------
 Install the dependencies in requirements.txt:
-`$ pip install -r requirements.txt`
+```
+$ pip install -r requirements.txt
+```
 Install the binaries for transcoding Vorbis, AAC, and MP3: faac, faad, mpg123,
 oggdec, and oggenc; then, install audiotools (audiotools.sourceforge.net)
 
@@ -22,6 +24,7 @@ To do
 - [x] Transcode files: need both m4a and ogg.
 - [x] Web Audio API for mobile Safari support.
 - [x] Progress indicators
+- [ ] Support Gevent
 - [ ] Fix login response for incorrect password.  (And ensure correct HTTP responses everywhere, in general.)
 - [ ] Maps!  Geolocate uploaded sounds.  Show positions of sounds on home page.
 - [ ] Main page:  list users who have sounds in the current area.  Choose which
