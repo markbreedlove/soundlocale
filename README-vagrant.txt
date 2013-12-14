@@ -7,7 +7,12 @@ Install Vagrant, Virtualbox, and Ansible:
 * http://www.ansibleworks.com/docs/intro_installation.html
   (sudo pip install ansible)
 
-Copy either Vagrantfile.allinone or Vagrantfile.multiple to Vagrant.
+Copy either Vagrantfile.allinone or Vagrantfile.multiple to Vagrant.  The
+"allinone" file will create one virtual machine with the web, database, and
+application, and "multiple" will create a separate VM for each.  Each one takes
+up about 400 to 420 MB of memory.  As a frame of reference, I find that I can
+run all three easily enough on Mac OS X 10.9, with 4 GB memory, while running a
+web browser and a number of shell sessions.
 
 Copy configuration_vagrant.py.dist to configuration_vagrant.py and edit the
 mail-related settings.  For general demonstration / development use, you should

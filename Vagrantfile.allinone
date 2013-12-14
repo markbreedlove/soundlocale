@@ -13,7 +13,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         web.vm.provision :ansible do |ansible|
             ansible.playbook = "ansible/allinone.yml"
             ansible.inventory_path = "ansible/development.allinone"
-            ansible.limit = "web"
         end
     end
 
