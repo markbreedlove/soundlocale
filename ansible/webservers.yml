@@ -1,0 +1,11 @@
+---
+
+- hosts: webservers
+  remote_user: vagrant
+  sudo: yes
+  roles:
+    - common
+    - web
+  vars:
+    appserver_ipaddr: 192.168.50.5
+    dbserver_ipaddr: 192.168.50.6

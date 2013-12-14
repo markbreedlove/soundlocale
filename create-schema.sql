@@ -1,5 +1,4 @@
 
-DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
       `id` bigint(20) unsigned NOT NULL,
       `username` varchar(255) NOT NULL,
@@ -16,7 +15,6 @@ CREATE TABLE `user` (
       UNIQUE KEY `x_user_authtoken` (`auth_token`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `sound`;
 CREATE TABLE `sound` (
       `id` bigint(20) unsigned NOT NULL,
       `lat` double NOT NULL,

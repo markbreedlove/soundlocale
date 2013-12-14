@@ -1,0 +1,5 @@
+---
+
+- name: restart webapp
+  service: name=twistd_web state=restarted
+

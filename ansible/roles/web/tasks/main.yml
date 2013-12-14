@@ -1,0 +1,18 @@
+---
+
+- name: Install packages
+  apt: pkg={{ item }} state=present
+  with_items:
+    - nginx
+
+- name: Remove default site
+  command: rm -f /etc/nginx/sites-enabled/default
+  notify: restart nginx
+
+- name: Update nginx site file with server directive
+  template: src=nginx_vagrant.soundlocale.org.j2 dest=/etc/nginx/sites-available/vagrant.soundlocale.org
+  notify: restart nginx
+
+- name: Symlink nginx site file with server directive
+  command: sh -c 'cd /etc/nginx/sites-enabled && ln -sf ../sites-available/vagrant.soundlocale.org vagrant.soundlocale.org'
+

@@ -1,0 +1,4 @@
+---
+appserver_port: 8080
+appserver_user: vagrant
+

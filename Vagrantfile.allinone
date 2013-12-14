@@ -1,0 +1,21 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+    config.vm.define :web do |web|
+        web.vm.box = "precise64"
+        web.vm.box_url = "http://files.vagrantup.com/precise64.box"
+        web.vm.network :private_network, ip: "192.168.50.4",
+            virtualbox__intnet: true
+        web.vm.provision :ansible do |ansible|
+            ansible.playbook = "ansible/allinone.yml"
+            ansible.inventory_path = "ansible/development.allinone"
+            ansible.limit = "web"
+        end
+    end
+
+end
+

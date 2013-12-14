@@ -1,0 +1,26 @@
+---
+
+# - name: Set hostname
+#   shell: hostname {{ hostname }}
+#   notify: restart rsyslogd
+# 
+# - name: Update /etc/hostname
+#   shell: echo "{{ hostname }}" > /etc/hostname
+
+- name: Set hostname
+  hostname: name={{ hostname }}
+
+- name: Update hosts file
+  template: src="hosts.j2" dest="/etc/hosts"
+
+- name: Update apt package index
+  apt: update_cache=yes
+
+- name: Upgrade apt packages
+  apt: upgrade=safe
+
+- name: Install packages
+  apt: pkg={{ item }} state=present
+  with_items:
+    - make  
+    - curl

@@ -1,0 +1,29 @@
+DEBUG = True
+
+LOGFILE = '/home/vagrant/soundlocale_log'
+
+DB_HOST = 'db'
+DB_NAME = 'soundlocale'
+DB_USER = 'vagrant'
+DB_PASSWORD = 'vagrant'
+
+
+STORAGE = {
+    'container_1': {
+        'base_url': 'http://vagrant.soundlocale.org/static/storage/',
+        'fs_path': '/vagrant/static/storage/'
+    }
+}
+
+SIGNING_KEY = 'eir2uw9cifjwfu28e7fhxu'
+
+MAIL_DEBUG = False
+MAIL_SERVER = 'CHANGE ME'
+MAIL_PORT = 587
+MAIL_USE_TLS = True
+MAIL_USERNAME = 'CHANGE ME'
+MAIL_PASSWORD = 'CHANGE ME'
+DEFAULT_MAIL_SENDER = 'CHANGE ME'
+
+SECRET_KEY = 'thiswouldbesomethingelesforarealsite'
+

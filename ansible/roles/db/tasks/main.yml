@@ -1,0 +1,20 @@
+---
+
+- name: Install packages
+  apt: pkg={{ item }} state=present
+  with_items:
+    - mysql-server
+    - python-mysqldb
+
+- name: Update mysql config file
+  template: src=my.cnf.j2 dest=/etc/mysql/my.cnf
+  notify:
+    - restart mysql
+
+- name: Ensure existence of application database user
+  mysql_user: name=vagrant password=vagrant priv=*.*:ALL host="%" state=present
+
+- name: Ensure existence of application database
+  mysql_db: name=soundlocale encoding=utf8 state=import target=/vagrant/create-schema.sql
+  ignore_errors: yes
+

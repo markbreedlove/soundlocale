@@ -27,7 +27,11 @@ from flask import Flask, jsonify, render_template, request, session, Response
 from nfconverter import NegativeFloatConverter
 app = Flask('soundlocale')
 app.url_map.converters['float'] = NegativeFloatConverter
-app.config.from_object('configuration')
+config_name = os.environ.get('SOUNDLOCALE_CONFIG')
+if config_name:
+    app.config.from_object(config_name)
+else:
+    app.config.from_object('configuration')
 import logging
 from models import db
 from views.user import *

@@ -1,0 +1,31 @@
+---
+
+- name: Install packages
+  apt: pkg={{ item }} state=present
+  with_items:
+    - vorbis-tools
+    - faac
+    - faad
+    - python-pip
+    - mysql-client
+    - libmysqlclient-dev
+    - python2.7-dev
+
+# Pip packages
+- pip: name=setuptools extra_args='--upgrade'
+- pip: requirements=/vagrant/requirements.txt
+
+- name: Install python audiotools if necessary
+  script: install-audiotools.sh
+
+- name: Update init script for web app
+  template: src="init_twistd_web.j2" dest="/etc/init.d/twistd_web"
+  notify: restart webapp
+
+- name: Set ownership and mode of web app init script
+  file: path=/etc/init.d/twistd_web owner=root group=root mode=0755
+
+- name: Symlink init script for web app
+  command: update-rc.d twistd_web start 20 2 3 4 5 . stop 20 0 1 6 .
+  notify: restart webapp
+

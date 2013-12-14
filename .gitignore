@@ -1,5 +1,8 @@
 configuration.py
+configuration_vagrant.py
 twistd.pid
 twistd.log
 *.pyc
 passenger_wsgi.py
+Vagrantfile
+.vagrant
