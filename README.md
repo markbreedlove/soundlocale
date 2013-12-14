@@ -18,13 +18,19 @@ $ pip install -r requirements.txt
 Install the binaries for transcoding Vorbis, AAC, and MP3: faac, faad, mpg123,
 oggdec, and oggenc; then, install audiotools (audiotools.sourceforge.net)
 
+Testing and Development with Vagrant
+------------------------------------
+See README-vagrant.txt.  With the included Vagrant and Ansible files, you can
+easibly spin up virtual machines that are configured to serve up this
+application.
+
 
 To do
 -----
 - [x] Transcode files: need both m4a and ogg.
 - [x] Web Audio API for mobile Safari support.
 - [x] Progress indicators
-- [ ] Add Vagrant and Ansible files to ease installation, demoing, development
+- [x] Add Vagrant and Ansible files to ease installation, testing, development
 - [ ] Support Gevent
 - [ ] Fix login response for incorrect password.  (And ensure correct HTTP responses everywhere, in general.)
 - [ ] Maps!  Geolocate uploaded sounds.  Show positions of sounds on home page.

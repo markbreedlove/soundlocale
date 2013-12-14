@@ -31,5 +31,28 @@ $ vagrant up
 In your browser, go to:
 http://vagrant.soundlocale.org/
 
-If you run into any issues with this installation, please let me know!
+
+Known issues:
+-------------
+* The "allinone" configuration's provisioning isn't happening in the right
+  order, such that the web application is started before the database is
+  started, and returns an error, which stops the provisioning.  I'll fix this
+  soon, but the "multiple" setup does work, if you want to use that.
+* If you get errors about the vboxfs file system not being available, ssh into
+  the virtual machine with "vagrant ssh <host>" and run "sudo
+  /etc/init.d/vboxsf setup" and then restart the server (e.g. with "vagrant
+  reload").  I'll eventually create an Ansible playbook to handle this
+  situation, which is a known issue with Vagrant with regard to Debian's apt-get
+  upgrade of kernel packages.
+
+Tips:
+-----
+* If you want to switch between the "allinone" and "multiple" setups, you
+  should destroy the existing VMs with "vagrant destroy" and then delete
+  the .vagrant directory from this directory.  Then copy the desired
+  Vagrantfile.<type> to Vagrantfile and do "vagrant up".
+* You probably want to exclude $HOME/VirtualBox VMs/ from any backup jobs that
+  you have going on, assuming you're just testing or developing.  The VMs can
+  be recreated at any time, as long as you aren't storing data that you care
+  about.
 
