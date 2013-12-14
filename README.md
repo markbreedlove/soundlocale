@@ -21,7 +21,7 @@ oggdec, and oggenc; then, install audiotools (audiotools.sourceforge.net)
 Testing and Development with Vagrant
 ------------------------------------
 See README-vagrant.txt.  With the included Vagrant and Ansible files, you can
-easibly spin up virtual machines that are configured to serve up this
+easily spin up virtual machines that are configured to serve up this
 application.
 
 
