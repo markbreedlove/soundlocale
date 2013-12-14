@@ -40,7 +40,7 @@ Known issues:
   soon, but the "multiple" setup does work, if you want to use that.
 * If you get errors about the vboxfs file system not being available, ssh into
   the virtual machine with "vagrant ssh <host>" and run "sudo
-  /etc/init.d/vboxsf setup" and then restart the server (e.g. with "vagrant
+  /etc/init.d/vboxadd setup" and then restart the server (e.g. with "vagrant
   reload").  I'll eventually create an Ansible playbook to handle this
   situation, which is a known issue with Vagrant with regard to Debian's apt-get
   upgrade of kernel packages.
