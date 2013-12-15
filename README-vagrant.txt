@@ -34,19 +34,24 @@ http://vagrant.soundlocale.org/
 
 Known issues:
 -------------
-* The "allinone" configuration's provisioning isn't happening in the right
-  order, such that the web application is started before the database is
-  started, and returns an error, which stops the provisioning.  I'll fix this
-  soon, but the "multiple" setup does work, if you want to use that.
 * If you get errors about the vboxfs file system not being available, ssh into
-  the virtual machine with "vagrant ssh <host>" and run "sudo
-  /etc/init.d/vboxadd setup" and then restart the server (e.g. with "vagrant
-  reload").  I'll eventually create an Ansible playbook to handle this
-  situation, which is a known issue with Vagrant with regard to Debian's apt-get
-  upgrade of kernel packages.
+  the virtual machine with "vagrant ssh <host>" and run these commands:
+  $ sudo /etc/init.d/vboxadd setup
+  $ sudo mount -t vboxsf -o uid=`id -u vagrant`,gid=`getent group vagrant | \
+    cut -d: -f3` /vagrant /vagrant
+  $ sudo mount -t vboxsf -o uid=`id -u vagrant`,gid=`id -g vagrant` \
+    /vagrant /vagrant
+  You could also restart the server (e.g. with "vagrant reload").  I'll
+  eventually create an Ansible playbook to handle this situation, which is a
+  known issue with Vagrant with regard to Debian's apt-get upgrade of kernel
+  packages.
 
 Tips:
 -----
+* The first time you create a VM, it has to do an extensive package upgrade
+  of the the software in the base image, after which you should restart the VM
+  with "vagrant reload," and then watch out for the known issue, above,
+  regarding vboxfs.  After that, you shouldn't have to do this again.
 * If you want to switch between the "allinone" and "multiple" setups, you
   should destroy the existing VMs with "vagrant destroy" and then delete
   the .vagrant directory from this directory.  Then copy the desired
@@ -55,4 +60,6 @@ Tips:
   you have going on, assuming you're just testing or developing.  The VMs can
   be recreated at any time, as long as you aren't storing data that you care
   about.
-
+* If you destroy and re-create a VM, you should delete the old public key
+  from your $HOME/.ssh/known_hosts to avoid getting an error when you run
+  "vagrant up" again.

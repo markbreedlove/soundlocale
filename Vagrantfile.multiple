@@ -5,15 +5,15 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-    config.vm.define :web do |web|
-        web.vm.box = "precise64"
-        web.vm.box_url = "http://files.vagrantup.com/precise64.box"
-        web.vm.network :private_network, ip: "192.168.50.4",
+    config.vm.define :db do |db|
+        db.vm.box = "precise64"
+        db.vm.box_url = "http://files.vagrantup.com/precise64.box"
+        db.vm.network :private_network, ip: "192.168.50.6",
             virtualbox__intnet: true
-        web.vm.provision :ansible do |ansible|
-            ansible.playbook = "ansible/webservers.yml"
+        db.vm.provision :ansible do |ansible|
+            ansible.playbook = "ansible/dbservers.yml"
             ansible.inventory_path = "ansible/development.multi"
-            ansible.limit = "web"
+            ansible.limit = "db"
         end
     end
 
@@ -29,15 +29,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
     end
 
-    config.vm.define :db do |db|
-        db.vm.box = "precise64"
-        db.vm.box_url = "http://files.vagrantup.com/precise64.box"
-        db.vm.network :private_network, ip: "192.168.50.6",
+    config.vm.define :web do |web|
+        web.vm.box = "precise64"
+        web.vm.box_url = "http://files.vagrantup.com/precise64.box"
+        web.vm.network :private_network, ip: "192.168.50.4",
             virtualbox__intnet: true
-        db.vm.provision :ansible do |ansible|
-            ansible.playbook = "ansible/dbservers.yml"
+        web.vm.provision :ansible do |ansible|
+            ansible.playbook = "ansible/webservers.yml"
             ansible.inventory_path = "ansible/development.multi"
-            ansible.limit = "db"
+            ansible.limit = "web"
         end
     end
 

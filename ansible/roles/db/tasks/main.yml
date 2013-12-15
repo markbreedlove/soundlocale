@@ -5,16 +5,30 @@
   with_items:
     - mysql-server
     - python-mysqldb
+  tags:
+    - packages
+    - database
 
 - name: Update mysql config file
   template: src=my.cnf.j2 dest=/etc/mysql/my.cnf
   notify:
     - restart mysql
+  meta: flush_handlers
+  tags:
+    - database
 
 - name: Ensure existence of application database user
   mysql_user: name=vagrant password=vagrant priv=*.*:ALL host="%" state=present
+  tags:
+    - database
 
 - name: Ensure existence of application database
-  mysql_db: name=soundlocale encoding=utf8 state=import target=/vagrant/create-schema.sql
-  ignore_errors: yes
+  mysql_db: name=soundlocale encoding=utf8 state=present
+  tags:
+    - database
+
+- name: Ensure existence of application tables
+  mysql_db: name=soundlocale state=import target=/vagrant/create-schema.sql
+  tags:
+    - database
 

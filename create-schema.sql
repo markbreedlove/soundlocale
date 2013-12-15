@@ -1,5 +1,5 @@
 
-CREATE TABLE `user` (
+CREATE TABLE IF NOT EXISTS `user` (
       `id` bigint(20) unsigned NOT NULL,
       `username` varchar(255) NOT NULL,
       `fullname` varchar(255) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE `user` (
       UNIQUE KEY `x_user_authtoken` (`auth_token`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE `sound` (
+CREATE TABLE IF NOT EXISTS `sound` (
       `id` bigint(20) unsigned NOT NULL,
       `lat` double NOT NULL,
       `lng` double NOT NULL,
