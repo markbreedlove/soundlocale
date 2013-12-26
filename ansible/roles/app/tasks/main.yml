@@ -19,13 +19,13 @@
   script: install-audiotools.sh
 
 - name: Update init script for web app
-  template: src="init_twistd_web.j2" dest="/etc/init.d/twistd_web"
+  template: src="init_soundlocale.j2" dest="/etc/init.d/soundlocale"
   notify: restart webapp
 
 - name: Set ownership and mode of web app init script
-  file: path=/etc/init.d/twistd_web owner=root group=root mode=0755
+  file: path=/etc/init.d/soundlocale owner=root group=root mode=0755
 
 - name: Symlink init script for web app
-  command: update-rc.d twistd_web start 20 2 3 4 5 . stop 20 0 1 6 .
+  command: update-rc.d soundlocale start 20 2 3 4 5 . stop 20 0 1 6 .
   notify: restart webapp
 

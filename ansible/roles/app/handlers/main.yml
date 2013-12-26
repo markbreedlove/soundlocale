@@ -1,5 +1,6 @@
 ---
 
 - name: restart webapp
-  service: name=twistd_web state=restarted
+  service: name=soundlocale state=restarted
+
 

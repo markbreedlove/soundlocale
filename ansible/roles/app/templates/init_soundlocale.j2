@@ -3,8 +3,8 @@
 # For Debian / Ubuntu
 
 
-NAME=twistd_web
-DAEMON=/usr/local/bin/twistd
+NAME=soundlocale
+DAEMON=/vagrant/gevent_wsgi.py
 APPDIR=/vagrant
 PORT={{ appserver_port }}
 USER={{ appserver_user }}
@@ -16,13 +16,14 @@ test -x $DAEMON || exit 1
 . /lib/lsb/init-functions
 
 start() {
-    log_daemon_msg "Starting twistd web for soundlocale" "twistd"
+    log_daemon_msg "Starting soundlocale web application" "soundlocale"
     if [ -z "$UGID" ]; then
         log_failure_msg "user \"$USER\" does not exist"
         exit 1
     fi
     export SOUNDLOCALE_CONFIG="configuration_vagrant"
-    start-stop-daemon --start -d $APPDIR -u $USER --pidfile $pidfile --exec $DAEMON -- web --port $PORT --wsgi twistd_wsgi.app.app
+    start-stop-daemon -b --start -d $APPDIR -c $USER --exec $DAEMON \
+        --pidfile $pidfile -- -p $PORT --pidfile $pidfile
 }
 
 stop() {

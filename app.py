@@ -2,24 +2,15 @@
 # See README.md and License.txt.
 
 """
+To run as a WSGI application, see gevent_wsgi.py.  This is the preferred method.
+
 To run with Twisted handling the app plus the static resources, see
 twistd_wsgi.py.
 
-To run with Twisted acting as middleware between the app and a webserver:
-    1.  Run Twisted like this:
-        $ cd <this directory>
-        $ twistd web --port 8080 --wsgi app.app --log /path/to/twistd.log
-    2.  Configure your webserver to reverse-proxy the application (see your
-        webserver's documentation) to the port used above, and configure it
-        to alias '/static' to the 'static' directory in the app.
-
-To run with passenger:
+To run with passenger (e.g. in a shared hosting environment; less desirable):
     Copy passenger_wsgi.py.dist to passenger_wsgi.py and edit it with the
     path to your executable.
 
-To run with built-in Flask server:
-    $ cd <this directory>
-    $ python app.py
 """
 
 import os
