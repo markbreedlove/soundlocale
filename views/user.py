@@ -23,22 +23,13 @@ from app import app
 @app.route('/users.json', methods=['POST'])
 def add_user():
     data = form_or_json()
-    try:
-        new_user = user.add_user(username=data['username'],
-                                 fullname=data['fullname'],
-                                 password=data['password'],
-                                 email=data['email'])
-        send_activation_mail(new_user.id, new_user.email)
-        return jsonify({'id': new_user.id, 'username': new_user.username,
-                        'fullname': new_user.fullname, 'email': new_user.email})
-    except BadRequestError:
-        response = jsonify(message='Bad Request')
-        response.status_code = 400
-        return response
-    except ConflictError as e:
-        response = jsonify(message=e.message)
-        response.status_code = 409
-        return response
+    new_user = user.add_user(username=data['username'],
+                             fullname=data['fullname'],
+                             password=data['password'],
+                             email=data['email'])
+    send_activation_mail(new_user.id, new_user.email)
+    return jsonify({'id': new_user.id, 'username': new_user.username,
+                    'fullname': new_user.fullname, 'email': new_user.email})
 
 @app.route('/user/<int:id>.json')
 def get_user(id):
@@ -47,9 +38,7 @@ def get_user(id):
         return jsonify({'id': str(the_user.id), 'username': the_user.username,
                         'fullname': the_user.fullname, 'email': the_user.email})
     except DoesNotExist:
-        response = jsonify(message='Not Found')
-        response.status_code = 404
-        return response
+        raise NotFoundError()
 
 @app.route('/activation/<signedstring>')
 def activation(signedstring):
@@ -62,9 +51,7 @@ def activation(signedstring):
         session['user_id'] = id
         return redirect(url_for('index'))
     except (BadSignature, DoesNotExist):
-        response = jsonify(message='Bad Request')
-        response.status_code = 400
-        return response
+        raise BadRequestError()
 
 def send_activation_mail(user_id, email):
     url = url_for('activation', signedstring=sign(str(user_id), app.config),

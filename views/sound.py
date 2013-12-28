@@ -57,13 +57,9 @@ def add_sound():
                                     user=u, flags=flags)
         return jsonify(new_sound.for_api(app.config['STORAGE']))
     except user.User.DoesNotExist:
-        response = jsonify(message='Unauthorized')
-        response.status_code = 401
-        return response
-    except (ValueError, BadRequestError) as e:
-        response = jsonify(message='Bad Request')
-        response.status = '400 ' + e.message
-        return response
+        raise UnauthorizedError()
+    except ValueError as e:
+        raise BadRequestError(e.message)
 
 def filetype(filename):
     pat  = re.compile(r"\.(mp3|ogg|m4a|aif|wav)$", re.I)
@@ -153,13 +149,7 @@ def delete_sound(id):
         s.delete_instance()
         return jsonify({'status': 'OK'})
     except sound.Sound.DoesNotExist:
-        response = jsonify(message='Forbidden')
-        response.status_code = 403
-        return response
-    except BadRequestError:
-        response = jsonify(message='Bad Request')
-        response.status_code = 400
-        return response
+        raise ForbiddenError()
 
 def delete_files(basename, container, flags):
     base_path = app.config['STORAGE'][container]['fs_path']
@@ -197,13 +187,9 @@ def edit_sound(id):
         s.save()
         return jsonify(s.for_api(app.config['STORAGE']))
     except sound.Sound.DoesNotExist:
-        response = jsonify(message='Forbidden')
-        response.status_code = 403
-        return response
+        raise ForbiddenError()
     except ValueError:
-        response = jsonify(message='Bad Request')
-        response.status_code = 400
-        return response
+        raise BadRequestError()
 
 @app.route('/sounds/near/<float:lat>,<float:lng>,<int:meters>.json')
 def sounds_near(lat, lng, meters):
@@ -222,8 +208,4 @@ def sounds_for_user():
         return jsonify({'sounds': sounds})
     except sound.Sound.DoesNotExist:
         return jsonify({'sounds': []})
-    except BadRequestError:
-        response = jsonify(message='Bad Request')
-        response.status_code = 400
-        return response
 

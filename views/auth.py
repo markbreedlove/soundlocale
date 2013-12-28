@@ -31,14 +31,11 @@ def auth_token():
         if the_user.auth_token:
             response = jsonify(auth_token=sign(the_user.auth_token, app.config),
                                user_id=str(session['user_id']))
+            return response
         else:
-            response = jsonify(message='Not Found')
-            response.status_code = 404
-        return response
+            raise NotFoundError()
     else:
-        response = jsonify(message='Unauthorized')
-        response.status_code = 401
-        return response
+        raise UnauthorizedError()
 
 
 @app.route('/session.json', methods=['POST'])
@@ -61,15 +58,11 @@ def add_session():
             return jsonify(auth_token=sign(auth_token, app.config),
                            user_id=str(the_user.id))
         else:
-            raise Exception()
+            raise UnauthorizedError()
     except KeyError:
-        response = jsonify(message='Bad Request')
-        response.status_code = 400
-        return response
+        raise BadRequestError()
     except DoesNotExist:
-        response = jsonify(message='Unauthorized')
-        response.status_code = 401
-        return response
+        raise UnauthorizedError()
 
 @app.route('/session.json', methods=['DELETE'])
 def delete_session():
