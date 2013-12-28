@@ -32,7 +32,7 @@ To do
 - [x] Progress indicators
 - [x] Add Vagrant and Ansible files to ease installation, testing, development
 - [x] Support Gevent
-- [ ] Fix login response for incorrect password.  (And ensure correct HTTP responses everywhere, in general.)
+- [x] Fix login response for incorrect password.
 - [ ] Maps!  Geolocate uploaded sounds.  Show positions of sounds on home page.
 - [ ] Main page:  list users who have sounds in the current area.  Choose which
   user to listen to.
