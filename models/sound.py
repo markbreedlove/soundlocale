@@ -73,11 +73,13 @@ def add_sound(lat, lng, basename, title, container, user, flags):
                         modified=timestamp)
 
 
-def sounds_near(lat, lng, meters, storage_config):
+def sounds_near(lat, lng, meters, storage_config, user_id=None):
     b = boundaries(lat, lng, meters)
-    q = Sound.select() \
+    q = peewee.SelectQuery(Sound) \
              .where(Sound.lat.between(b['n'], b['s'])) \
              .where(Sound.lng.between(b['w'], b['e']))
+    if user_id:
+        q = q.join(User).where(User.id == user_id)
     near_sounds = filtered_by_radius(q, lat, lng, meters)
     return [s.for_api(storage_config) for s in near_sounds]
 

@@ -26,12 +26,17 @@ var LocalSounds = Backbone.Collection.extend({
     initialize: function(models, opts) {
         opts || (opts = {});
         Backbone.Collection.prototype.initialize.call(this, models, opts);
-        opts.meters && (this.meters = opts.meters);
+        this.meters = opts.meters;
+        this.userID = (opts.userID || null);
     },
     model: Sound,
     url: function() {
-        return  '/sounds/near/' + this.lat.toFixed(6) + ',' +
+        var path = '/sounds/near/' + this.lat.toFixed(6) + ',' +
             this.lng.toFixed(6) + ',' + this.meters + '.json';
+        if (this.userID) {
+            path += '?user_id=' + this.userID;
+        }
+        return path;
     },
     parse: function(response) {
         return response.sounds;
@@ -42,6 +47,9 @@ var LocalSounds = Backbone.Collection.extend({
     setPosition: function(position) {
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
+    },
+    setUserID: function(id) {
+        this.userID = id;
     }
 });
 

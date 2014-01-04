@@ -196,9 +196,10 @@ def sounds_near(lat, lng, meters):
     """
     Retrieve sounds near coordinates, within given distance in meters.
     """
-    return jsonify({'sounds': sound.sounds_near(lat, lng,
-                                                meters,
-                                                app.config['STORAGE'])})
+    user_id = request.args.get('user_id')
+    return jsonify({'sounds': sound.sounds_near(lat, lng, meters,
+                                                app.config['STORAGE'],
+                                                user_id)})
 
 @app.route('/sounds/mine.json')
 def sounds_for_user():

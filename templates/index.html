@@ -4,7 +4,6 @@
 
 
 {% block middle %}
-	<div id="map"></div>
 	<div id="soundlist"></div>
 {% endblock %}
 
@@ -13,7 +12,14 @@
 
 {{ super() }}
 
+<script id="program_list_template" type="text/template">
+	<div id="locale-map-canvas" class="map-canvas"></div>
+	<div id="programs"></div>
+</script>
+
+
 <script id="local_sound_list_template" type="text/template">
+	<div id="program-map-canvas" class="map-canvas"></div>
 	<button id="play-button" type="button" class="btn btn-default"
 			data-loading-text="Loading...">
 		Play
@@ -113,6 +119,7 @@
 <script src="{{ url_for('static', filename='js/views-index.js') }}"></script>
 <script src="{{ url_for('static', filename='js/views-accountnav.js') }}"></script>
 <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.14&sensor=true&key=AIzaSyD-3nkd1ii1Dx3bo-BcCqw1xhhqEBVrXAs"></script>
 <script>
 
 	function soundExt() {
@@ -128,6 +135,7 @@
 		return ext;
 	}
 
+	var ac;
 	var unsupUrl = '{{ url_for('static', filename='unsupported.html', _external=True) }}';
 	try {
 		window.AudioContext =
@@ -139,7 +147,6 @@
 	if (! ('geolocation' in navigator)) {
 		document.location = unsupUrl;
 	}
-	var ac;
 	var beepsource = ac.createBufferSource();
 	var beepreq = new XMLHttpRequest();
 	beepsource.connect(ac.destination);
@@ -170,6 +177,27 @@
 		}
 		cb();
 	}
+
+	function handleGeoLocationError(map) {
+		opts = {
+			map:  map,
+			position: new google.maps.LatLng(60, 105),
+			content: 'Geolocation lookup failed'
+		};
+		var infoWindow = new google.maps.InfoWindow(opts);
+		map.setCenter(opts.position);
+	}
+
+
+	function setMapCenterFromPosition(map, position) {
+		map.setCenter(
+			new google.maps.LatLng(
+				position.coords.latitude,
+				position.coords.longitude
+			)
+		);
+	}
+
 
 	(function() {
 		var Config = {

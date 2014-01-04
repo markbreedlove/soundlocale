@@ -5,6 +5,21 @@ function volume(distance) {
     return 1.0 - (distance / maxMeters);
 }
 
+
+var ProgramListView = Backbone.View.extend({
+    el: '#soundlist',
+    template: _.template($('#program_list_template').html()),
+    initialize: function(opts) {
+        _.bindAll(this, 'render');
+    },
+    render: function() {
+        this.$el.html(this.template());
+        var sounds = new LocalSounds({}, {meters: maxMeters});
+        new ProgramMap($('#locale-map-canvas')[0], sounds, true);
+    }
+});
+
+
 var SoundListView = Backbone.View.extend({
     el: '#soundlist',
     template: _.template($('#local_sound_list_template').html()),
@@ -15,16 +30,26 @@ var SoundListView = Backbone.View.extend({
     initialize: function(opts) {
         _.bindAll(this, 'render', 'play', 'stop', 'update', 'updateList')
         this.config = opts.config;
-        this.sounds = new LocalSounds({}, {meters: maxMeters});
+        this.userID = opts.userID;
+        this.sounds = new LocalSounds({}, {
+            meters: maxMeters,
+            userID: this.userID
+        });
         this.audioContext = opts.audioContext;
         this.loadingCount = 0;
         this.sources = {};
         this.gainNodes = {};
+        this.programMap = null;
     },
     render: function() {
         var that = this;
         this.soundViews = {}
         this.$el.html(this.template());
+        this.programMap = new ProgramMap(
+            this.$('#program-map-canvas')[0],
+            this.sounds,
+            false
+        );
     },
     update: function(cb) {
         var that = this;
@@ -335,7 +360,6 @@ var UserSoundView = Backbone.View.extend({
                 looping: (this.$('input[name=looping]').is(':checked') ? 1 : 0)
             }, {
                 success: function() {
-                    console.log('success');
                     that._statusSuccess(that.$('.user-sound-buttons'), 'Saved');
                 },
                 error: function(model, xhr, opts) {
