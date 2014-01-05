@@ -83,7 +83,7 @@ function ProgramMap(div, /* LocalSounds */ sounds, clickable, callback) {
     this.clickable = (clickable || false);
     var that = this;
     this.map = new google.maps.Map(div, {
-        zoom: 18,
+        zoom: 19,
         streetViewControl: false,
         panControl: false,
         draggable: false
@@ -136,16 +136,16 @@ function SoundEditMap(div, /* Sound */ sound) {
     this.sound = sound;
     this.newLatLng = null;
     this.map = new google.maps.Map(div, {
-        zoom: 18,
+        zoom: 19,
         streetViewControl: true,
         panControl: true,
         draggable: true
     });
-    if (sound) {
+    if (! sound.isNew()) {
         var latLng = new google.maps.LatLng(sound.get('lat'), sound.get('lng'));
         this.map.setCenter(latLng);
         this.marker = new google.maps.Marker({
-            map: map,
+            map: this.map,
             position: latLng
         });
     } else {
@@ -154,7 +154,7 @@ function SoundEditMap(div, /* Sound */ sound) {
         });
         this.marker = null;
     }
-    google.maps.event.addListener(map, 'click', function(event) {
+    google.maps.event.addListener(this.map, 'click', function(event) {
         that.setNewLatLng(event.latLng);
     });
 }

@@ -137,3 +137,7 @@ button.btn-login {
     margin-bottom: 20px;
 }
 
+.edit-map-canvas.map-canvas {
+    height: 200px;
+}
+

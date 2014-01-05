@@ -335,7 +335,6 @@ var UserSoundListView = Backbone.View.extend({
         var sound = new Sound({}, {authToken: this.authToken});
         sound.authToken = this.authToken;
         var div = $('<div class="user-sound panel panel-default">');
-        div.css({display: 'none'});
         this.$('#user-sounds').prepend(div);
         this.userSoundViews[sound.cid] =
             new UserSoundView({
@@ -345,14 +344,14 @@ var UserSoundListView = Backbone.View.extend({
                 authToken: this.authToken,
                 config: this.config
             }).render();
-        div.slideDown();
     }
 });
 
 
 var UserSoundView = Backbone.View.extend({
     initialize: function(opts) {
-        _.bindAll(this, 'save', 'deleteSound', 'fillCoords');
+        _.bindAll(this, 'save', 'deleteSound', 'fillCoords',
+            'fillCoordsFromMap');
         opts || (opts = {});
         opts.authToken && (this.authToken = opts.authToken);
         opts.config && (this.config = opts.config);
@@ -394,8 +393,10 @@ var UserSoundView = Backbone.View.extend({
             this.$el.html(this.template(this.model.toJSON()));
             this.$('button.save').on('click', this.save);
         }
+        this.map = new SoundEditMap(this.$('.edit-map-canvas')[0], this.model);
         this.$('button.delete').on('click', this.deleteSound);
         this.$('button.use-current-coords').on('click', this.fillCoords);
+        this.$('button.use-map-point').on('click', this.fillCoordsFromMap);
         this.$('form').validate({
             rules: {
                 lat: { number: true },
@@ -449,7 +450,16 @@ var UserSoundView = Backbone.View.extend({
         navigator.geolocation.getCurrentPosition(function(pos) {
             that.$('input[name=lat]').val(pos.coords.latitude);
             that.$('input[name=lng]').val(pos.coords.longitude);
+            var latLng = new google.maps.LatLng(
+                pos.coords.latitude, pos.coords.longitude
+            );
+            that.map.setNewLatLng(latLng);
         });
+    },
+    fillCoordsFromMap: function() {
+        var latLng = this.map.getNewLatLng();
+        this.$('input[name=lat]').val(latLng.lat);
+        this.$('input[name=lng]').val(latLng.lng);
     }
 });
 

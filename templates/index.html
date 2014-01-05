@@ -57,7 +57,8 @@
 </script>
 
 <script id="user_sound_template" type="text/template">
-    <% if (id) { %>
+	<div class="edit-map-canvas map-canvas"></div>
+	<% if (id) { %>
 	<audio id="user-audio-<%= id %>" preload="none" controls>
 		<% if (mp3) { %>
 		<source src="<%= url %>.mp3" type="audio/mpeg">
@@ -94,8 +95,11 @@
 		<input name="looping" type="checkbox" <%= looping ? 'checked' : '' %>>
     </form>
 	<div class="user-sound-buttons">
+		<button class="use-map-point btn btn-sm btn-default">
+			Use map marker
+		</button>
 	    <button class="use-current-coords btn btn-sm  btn-default">
-			Use current coordinates
+			Use current location
 		</button>
 	    <button class="save btn btn-success btn-sm">Save</button>
 		<% if (id) { %>
