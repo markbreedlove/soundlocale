@@ -11,6 +11,31 @@ var User = Backbone.Model.extend({
 });
 
 
+var Program = Backbone.Model.extend({
+});
+
+
+var Programs = Backbone.Collection.extend({
+    initialize: function(models, opts) {
+        opts || (opts = {});
+        Backbone.Collection.prototype.initialize.call(this, models, opts);
+        this.meters = (opts.meters || null);
+    },
+    model: Program,
+    url: function() {
+        return '/programs/near/' + this.lat.toFixed(6) + ',' +
+            this.lng.toFixed(6) + ',' + this.meters + '.json';
+    },
+    parse: function(response) {
+        return response.programs;
+    },
+    setPosition: function(position) {
+        this.lat = position.coords.latitude;
+        this.lng = position.coords.longitude;
+    },
+});
+
+
 var Sound = Backbone.Model.extend({
     url: function() {
         url = '/sound/' + this.id + '.json';

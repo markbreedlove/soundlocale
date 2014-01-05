@@ -28,6 +28,7 @@ from models import db
 from views.user import *
 from views.sound import *
 from views.auth import *
+from views.program import *
 
 log_file_handler = logging.FileHandler(app.config['LOGFILE'])
 log_file_handler.setLevel(logging.DEBUG)

@@ -77,7 +77,7 @@ var Router = Backbone.Router.extend({
 /*
  * ProgramMap:  for displaying sounds in a program, or on the home page
  */
-function ProgramMap(div, /* LocalSounds */ sounds, clickable) {
+function ProgramMap(div, /* LocalSounds */ sounds, clickable, callback) {
     this.sounds = sounds;
     this.markers = {};
     this.clickable = (clickable || false);
@@ -96,6 +96,9 @@ function ProgramMap(div, /* LocalSounds */ sounds, clickable) {
                 sounds.each(function(sound) {
                     that.placeMarker(sound);
                 });
+                if (callback) {
+                    callback();
+                }
             }
         });
     }, function() {

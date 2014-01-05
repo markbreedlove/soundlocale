@@ -56,6 +56,12 @@ class Sound(BaseModel):
                   'modified': self.modified}
         if hasattr(self, 'distance'):
             result['distance'] = self.distance
+        if hasattr(self, 'program'):
+            result['program'] = self.program
+        else:
+            result['program'] = {'id': str(self.user.id),
+                                 'name': self.user.fullname,
+                                 'token': "u%s" % self.user.id}
         return result
 
 
@@ -73,7 +79,7 @@ def add_sound(lat, lng, basename, title, container, user, flags):
                         modified=timestamp)
 
 
-def sounds_near(lat, lng, meters, storage_config, user_id=None):
+def sounds_near(lat, lng, meters, storage_config, user_id=None, for_api=True):
     b = boundaries(lat, lng, meters)
     q = peewee.SelectQuery(Sound) \
              .where(Sound.lat.between(b['n'], b['s'])) \
@@ -81,7 +87,10 @@ def sounds_near(lat, lng, meters, storage_config, user_id=None):
     if user_id:
         q = q.join(User).where(User.id == user_id)
     near_sounds = filtered_by_radius(q, lat, lng, meters)
-    return [s.for_api(storage_config) for s in near_sounds]
+    if for_api:
+        return [s.for_api(storage_config) for s in near_sounds]
+    else:
+        return near_sounds
 
 def filtered_by_radius(sounds, lat, lng, meters):
     '''

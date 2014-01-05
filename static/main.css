@@ -122,6 +122,9 @@ button.btn-login {
     cursor: pointer;
 }
 
+.program button {
+    float: right;
+}
 
 .map-canvas {
     width: 100%;

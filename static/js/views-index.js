@@ -10,12 +10,61 @@ var ProgramListView = Backbone.View.extend({
     el: '#soundlist',
     template: _.template($('#program_list_template').html()),
     initialize: function(opts) {
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render', 'programMapReady');
+        this.sounds = new LocalSounds({}, {meters: maxMeters});
     },
     render: function() {
         this.$el.html(this.template());
-        var sounds = new LocalSounds({}, {meters: maxMeters});
-        new ProgramMap($('#locale-map-canvas')[0], sounds, true);
+        new ProgramMap(
+            $('#locale-map-canvas')[0],
+            this.sounds,
+            true,
+            this.programMapReady
+        );
+    },
+    programMapReady: function() {
+        // Get programs from the list of sounds because we need the sounds
+        // themselves in order to draw a more interesting map.  We avoid
+        // doing a separate query for the list of programs by getting the
+        // programs from the sound records.
+        var programs = this.programsFromSounds(this.sounds);
+        programs.each(function(program) {
+            var $div = $('<div class="panel program">');
+            this.$('#programs').append($div);
+            new ProgramView({el: $div, model: program}).render();
+        });
+    },
+    programsFromSounds: function(sounds) {
+        var data = {}, models = [];
+        sounds.each(function(s) {
+            var program = s.get('program');
+            if (! (program.id in data)) {
+                data[program.id] = program;
+            }
+        });
+        _.each(_.values(data), function(attrs) {
+            models.push(new Program(attrs));
+        });
+        return new Programs(models);
+    }
+});
+
+
+var ProgramView = Backbone.View.extend({
+    template: _.template($('#program_template').html()),
+    initialize: function(opts) {
+        _.bindAll(this, 'render', 'goToProgram');
+    },
+    render: function() {
+        var that = this;
+        this.$el.html(this.template(this.model.toJSON()));
+        this.$('button').on('click', function() {
+            that.goToProgram(that.model.get('token'));
+        });
+        return this;
+    },
+    goToProgram: function(token) {
+        window.location = '#program/' + token;
     }
 });
 
