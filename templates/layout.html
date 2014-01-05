@@ -45,9 +45,10 @@
 {% block underscore_templates %}
 <script id="accountnav-template" type="text/template">
 	<ul class="nav navbar-nav">
+		<li><a href="{{ url_for('intro') }}">introduction</a></li>
 		<% if (username) { %>
 		<li <%= (active == 'mysounds' ? 'class="active"' : '') %>>
-			<a href="#/mysounds">my sounds</a>
+			<a href="/#/mysounds">my sounds</a>
 		</li>
 		<% } %>
 	<% if (username) { %>

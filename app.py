@@ -45,6 +45,10 @@ db.connect()
 def index():
     return render_template('index.html')
 
+@app.route('/intro')
+def intro():
+    return render_template('intro.html')
+
 @app.route('/signup')
 def signup():
     if 'foo' in session:

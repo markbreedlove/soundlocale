@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block title %}Introduction | Soundlocale{% endblock %}
+
+
+{% block middle %}
+
+<h1>Introduction</h1>
+
+<p>Welcome to Soundlocale!  Soundlocale is a platform for soundscapes that
+listeners can experience as they move around through a space with any
+mobile device that has a network connection, a modern web browser, and is
+geolocation-aware.</p>
+
+<p>Composers upload sounds and geotag them.  Listeners play them back as they
+move about the vicinity in which the sounds are tagged.  The resulting
+audio program is something that is "mixed" by the listener's choice of motion
+through the physical environment.</p>
+
+<p>For more information, please see our
+<a href="https://github.com/markbreedlove/soundlocale">GitHub repository</a>.
+</p>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+{{ super() }}
+<script src="{{ url_for('static', filename='js/underscore-min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/backbone-min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/views-accountnav.js') }}">
+</script>
+<script src="{{ url_for('static', filename='js/models.js') }}"></script>
+
+<script>
+
+	(function() {
+		var Config = {
+			baseUrl: '{{ url_for('index', _external=True) }}'
+		};
+		var authenticate = function(user, cb) {
+			$.getJSON(
+				Config.baseUrl + 'auth_token.json',
+				function(response) {
+					user.id = response.user_id;
+					cb();
+				}
+			);
+		};
+		$(document).ready(function() {
+			var user = new User();
+			authenticate(user, function() {
+				new AccountNavView({
+					config: Config,
+					router: null,
+					user: user
+				}).render();
+			});
+		});
+	})();
+
+</script>
+
+{% endblock %}
+
+
+<!-- vim: set noexpandtab tabstop=4: -->
