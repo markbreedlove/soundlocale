@@ -10,6 +10,9 @@
 			}}">
 		<link rel="stylesheet"
 			href="{{ url_for('static', filename='main.css') }}">
+		<link rel="stylesheet"
+			media="screen and (max-width: 320px)"
+			href="{{ url_for('static', filename='narrow.css') }}">
 		<title>{% block title %}{% endblock %}</title>
 {% endblock %}
 	</head>
