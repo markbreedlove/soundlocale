@@ -8,7 +8,9 @@ Program-related view functions
 __all__ = ['programs_near']
 
 from flask import jsonify, request
+from peewee import DoesNotExist
 import models.sound as sound
+import models.user as user
 from app import app
 from ourexceptions import *
 
@@ -28,6 +30,16 @@ def programs_near(lat, lng, meters):
         if p['id'] not in programs:
             programs[p['id']] = p
     return jsonify({'programs': programs.values()})
+
+@app.route('/program/u<int:id>.json')
+def program_for_user_id(id):
+    try:
+        the_user = user.User.get(user.User.id == id)
+        program = {'id': str(the_user.id), 'token': 'u%s' % the_user.id,
+              'name': the_user.fullname}
+        return jsonify({'program': program})
+    except DoesNotExist:
+        raise NotFoundError()
 
 def _program_for_sound(sound):
     if hasattr(sound, 'program'):

@@ -8,6 +8,10 @@ body {
     max-width: 500px;
 }
 
+#middle h1 {
+    font-size: 24px;
+}
+
 #sounds,
 #user-sounds {
     margin-top: 10px;

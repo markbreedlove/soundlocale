@@ -12,6 +12,23 @@ var User = Backbone.Model.extend({
 
 
 var Program = Backbone.Model.extend({
+    initialize: function(attrs, opts) {
+        opts || (opts = {});
+        Backbone.Model.prototype.initialize.call(this, attrs, opts);
+        this.userID = (opts.userID || null);
+    },
+    url: function() {
+        var token;
+        if (this.userID) {
+            token = 'u' + this.userID;
+        } else {
+            token = this.id;
+        }
+        return '/program/' + token + '.json';
+    },
+    parse: function(response) {
+        return response.program;
+    }
 });
 
 

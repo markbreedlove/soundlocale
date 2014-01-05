@@ -84,6 +84,9 @@ var SoundListView = Backbone.View.extend({
             meters: maxMeters,
             userID: this.userID
         });
+        this.program = new Program({}, {
+            userID: this.userID
+        });
         this.audioContext = opts.audioContext;
         this.loadingCount = 0;
         this.sources = {};
@@ -99,6 +102,11 @@ var SoundListView = Backbone.View.extend({
             this.sounds,
             false
         );
+        this.program.fetch({
+            success: function() {
+                that.$('.program-name').html(that.program.get('name'));
+            }
+        });
     },
     update: function(cb) {
         var that = this;
