@@ -1,26 +1,34 @@
 ---
 
-# - name: Set hostname
-#   shell: hostname {{ hostname }}
-#   notify: restart rsyslogd
-# 
-# - name: Update /etc/hostname
-#   shell: echo "{{ hostname }}" > /etc/hostname
-
 - name: Set hostname
   hostname: name={{ hostname }}
 
 - name: Update hosts file
   template: src="hosts.j2" dest="/etc/hosts"
 
-- name: Update apt package index
-  apt: update_cache=yes
+- name: Ensure availability of Ubuntu multiverse
+  # Needed for faac & faad packages
+  apt_repository: >-
+    repo='deb http://archive.ubuntu.com/ubuntu trusty multiverse' state=present
+- name: Ensure availability of Ubuntu multiverse updates
+  apt_repository: >-
+    repo='deb http://archive.ubuntu.com/ubuntu trusty-updates multiverse' state=present
 
 - name: Upgrade apt packages
-  apt: upgrade=safe
+  apt: upgrade=safe update_cache=yes
 
 - name: Install packages
-  apt: pkg={{ item }} state=present
+  apt: >-
+    pkg={{ item }} state=present
   with_items:
     - make  
     - curl
+
+- name: Get rid of packages we don't want
+  apt: >-
+    pkg={{ item }} state=absent purge=yes
+  with_items:
+    - puppet
+    - puppet-common
+    - chef
+    - chef-zero

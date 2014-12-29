@@ -15,7 +15,7 @@ Usage examples:
 """
 
 import peewee
-from _mysql_exceptions import IntegrityError
+from psycopg2 import IntegrityError
 import hashlib
 import re
 import simpleflake
@@ -32,7 +32,7 @@ class User(BaseModel):
     password = peewee.CharField()
     email = peewee.CharField()
     status = peewee.IntegerField()
-    auth_token = peewee.CharField()
+    auth_token = peewee.CharField(null=True, unique=True)
     created = peewee.IntegerField()
     modified = peewee.IntegerField()
 

@@ -4,15 +4,14 @@
   apt: pkg={{ item }} state=present
   with_items:
     - vorbis-tools
+    # faac and faad are in Ubuntu 'multiverse'
     - faac
     - faad
     - python-pip
-    - mysql-client
-    - libmysqlclient-dev
-    - python2.7-dev
+    - python-dev
+    - postgresql-server-dev-9.3
 
 # Pip packages
-- pip: name=setuptools extra_args='--upgrade'
 - pip: requirements=/vagrant/requirements.txt
 
 - name: Install python audiotools if necessary

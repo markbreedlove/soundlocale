@@ -35,7 +35,7 @@ log_file_handler.setLevel(logging.DEBUG)
 app.logger.addHandler(log_file_handler)
 
 db.init(app.config['DB_NAME'],
-        **{'passwd': app.config['DB_PASSWORD'],
+        **{'password': app.config['DB_PASSWORD'],
            'host': app.config['DB_HOST'],
            'user': app.config['DB_USER']})
 db.connect()

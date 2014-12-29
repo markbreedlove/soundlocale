@@ -1,34 +1,84 @@
 ---
 
-- name: Install packages
-  apt: pkg={{ item }} state=present
+- include_vars: "../vars/{{ level }}.yml"
+  when: level is defined
+  tags:
+    - database
+
+- name: Set kernel shared memory to be enough for PostgreSQL
+  template: >-
+      src="30-postgresql-shm.conf.j2"
+      dest=/etc/sysctl.d/30-postgresql-shm.conf
+      owner=root group=root mode=0644
+  tags:
+    - database
+
+- name: Load Kernel settings modified above
+  command: sysctl -p /etc/sysctl.d/30-postgresql-shm.conf
+  tags:
+    - database
+
+- name: Ensure that PostgreSQL and Ansible dependencies are installed
+  apt: >
+      pkg="{{ item }}" state=present
   with_items:
-    - mysql-server
-    - python-mysqldb
-  tags:
-    - packages
-    - database
-
-- name: Update mysql config file
-  template: src=my.cnf.j2 dest=/etc/mysql/my.cnf
-  notify:
-    - restart mysql
-  meta: flush_handlers
+    - postgresql
+    - libpq-dev
+    - python-psycopg2
   tags:
     - database
 
-- name: Ensure existence of application database user
-  mysql_user: name=vagrant password=vagrant priv=*.*:ALL host="%" state=present
+- name: Ensure state of main PostgreSQL config file (postgresql.conf)
+  template: src=postgresql.conf.j2 dest=/etc/postgresql/9.3/main/postgresql.conf
+  notify: restart postgresql
+  tags:
+    - database
+
+- name: Ensure state of PostgreSQL networking config file (pg_hba.conf)
+  template: src=pg_hba.conf.j2 dest=/etc/postgresql/9.3/main/pg_hba.conf
+  notify: restart postgresql
+  tags:
+    - database
+
+- meta: flush_handlers
+
+- name: Ensure credentials of application PostgreSQL user
+  postgresql_user: >
+      name="{{ postgresql_user.name }}" password="{{ postgresql_user.password }}"
+  sudo_user: postgres
   tags:
     - database
 
 - name: Ensure existence of application database
-  mysql_db: name=soundlocale encoding=utf8 state=present
+  postgresql_db: >
+      name=soundlocale encoding=UTF8 state=present template=template0
+  sudo_user: postgres
   tags:
     - database
 
-- name: Ensure existence of application tables
-  mysql_db: name=soundlocale state=import target=/vagrant/create-schema.sql
+- name: Ensure privileges on application database
+  postgresql_privs: >
+      database=soundlocale
+      roles={{ postgresql_user.name }}
+      state=present
+      type=database
+      privs=ALL
+  sudo_user: postgres
   tags:
     - database
 
+- name: Make sure that the backups directory exists
+  file: path=/backups state=directory owner=root group=root mode=0755
+  tags:
+    - database
+- name: Make sure that the PostgreSQL backups directory exists
+  file: path=/backups/postgresql state=directory owner=postgres group=postgres mode=0770
+  tags:
+    - database
+
+- name: Ensure state of crontab file
+  template: >-
+      src=etc_cron.d_backup-pg.j2 dest=/etc/cron.d/backup-pg
+      owner=root group=root mode=0644
+  tags:
+    - database

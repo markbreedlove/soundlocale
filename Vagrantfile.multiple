@@ -6,8 +6,10 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.vm.define :db do |db|
-        db.vm.box = "precise64"
-        db.vm.box_url = "http://files.vagrantup.com/precise64.box"
+        db.vm.box = "ubuntu/trusty64"
+        db.vm.provider "virtualbox" do |vb|
+            vb.memory = 384
+        end
         db.vm.network :private_network, ip: "192.168.50.6"
         db.vm.provision :ansible do |ansible|
             ansible.playbook = "ansible/dbservers.yml"
@@ -17,8 +19,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.vm.define :app do |app|
-        app.vm.box = "precise64"
-        app.vm.box_url = "http://files.vagrantup.com/precise64.box"
+        app.vm.box = "ubuntu/trusty64"
+        app.vm.provider "virtualbox" do |vb|
+            vb.memory = 384
+        end
         app.vm.network :private_network, ip: "192.168.50.5"
         app.vm.provision :ansible do |ansible|
             ansible.playbook = "ansible/appservers.yml"
@@ -28,8 +32,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.vm.define :web do |web|
-        web.vm.box = "precise64"
-        web.vm.box_url = "http://files.vagrantup.com/precise64.box"
+        web.vm.box = "ubuntu/trusty64"
+        web.vm.provider "virtualbox" do |vb|
+            vb.memory = 384
+        end
         web.vm.network :private_network, ip: "192.168.50.4"
         web.vm.provision :ansible do |ansible|
             ansible.playbook = "ansible/webservers.yml"
