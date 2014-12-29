@@ -4,9 +4,6 @@
 """
 To run as a WSGI application, see gevent_wsgi.py.  This is the preferred method.
 
-To run with Twisted handling the app plus the static resources, see
-twistd_wsgi.py.
-
 To run with passenger (e.g. in a shared hosting environment; less desirable):
     Copy passenger_wsgi.py.dist to passenger_wsgi.py and edit it with the
     path to your executable.
