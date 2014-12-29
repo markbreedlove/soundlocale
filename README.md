@@ -51,7 +51,7 @@ The future
 License
 -------
 
-    Copyright (C) 2013  Mark Breedlove (http://www.markbreedlove.com/)
+    Copyright (C) Mark Breedlove (http://www.markbreedlove.com/)
     and Qingyang Xi
 
     This program is free software: you can redistribute it and/or modify

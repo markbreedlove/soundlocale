@@ -1,4 +1,4 @@
-# Copyright (C) 2013  Mark Breedlove
+# Copyright (C) Mark Breedlove
 # See README.md and License.txt.
 
 import peewee

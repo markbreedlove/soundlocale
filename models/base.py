@@ -1,4 +1,4 @@
-# Copyright (C) 2013  Mark Breedlove and Qingyang Xi
+# Copyright (C) Mark Breedlove and Qingyang Xi
 # See README.md and License.txt.
 
 import peewee
