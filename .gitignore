@@ -6,3 +6,5 @@ twistd.log
 passenger_wsgi.py
 Vagrantfile
 .vagrant
+gevent.log
+gevent.pid
