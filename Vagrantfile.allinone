@@ -8,8 +8,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.define :allinone do |allinone|
         allinone.vm.box = "precise64"
         allinone.vm.box_url = "http://files.vagrantup.com/precise64.box"
-        allinone.vm.network :private_network, ip: "192.168.50.4",
-            virtualbox__intnet: true
+        allinone.vm.network :private_network, ip: "192.168.50.4"
         allinone.vm.provision :ansible do |ansible|
             ansible.playbook = "ansible/allinone.yml"
             ansible.inventory_path = "ansible/development.allinone"
