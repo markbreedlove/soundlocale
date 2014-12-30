@@ -6,10 +6,12 @@
 NAME=soundlocale
 DAEMON=/vagrant/gevent_wsgi.py
 APPDIR=/vagrant
+NETWORK_IF={{ hostvars[inventory_hostname][internal_network_interface]['ipv4']['address'] }}
 PORT={{ appserver_port }}
 USER={{ appserver_user }}
 UGID=$(getent passwd $RUNASUSER | cut -f 3,4 -d:) || true
 pidfile=/home/vagrant/$NAME.pid
+logfile=/home/vagrant/$NAME.log
 
 test -x $DAEMON || exit 1
 
@@ -23,7 +25,8 @@ start() {
     fi
     export SOUNDLOCALE_CONFIG="configuration_vagrant"
     start-stop-daemon -b --start -d $APPDIR -c $USER --exec $DAEMON \
-        --pidfile $pidfile -- -p $PORT --pidfile $pidfile
+        --pidfile $pidfile -- -p $PORT --pidfile $pidfile -l $logfile \
+        -i $NETWORK_IF
 }
 
 stop() {
