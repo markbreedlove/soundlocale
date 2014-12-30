@@ -27,11 +27,14 @@ class Sound(BaseModel):
     lng = peewee.DoubleField()
     basename = peewee.CharField()
     title = peewee.CharField()
-    container = peewee.CharField()
+    container = peewee.CharField(index=True)
     user = peewee.ForeignKeyField(User, related_name='sounds')
     flags = peewee.IntegerField()
     created = peewee.IntegerField()
     modified = peewee.IntegerField()
+
+    class Meta:
+        indexes = ((('lat', 'lng'), False),)
 
     def save(self, *args, **kwargs):
         self.modified = int(time())

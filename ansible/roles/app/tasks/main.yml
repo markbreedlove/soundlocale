@@ -28,3 +28,5 @@
   command: update-rc.d soundlocale start 20 2 3 4 5 . stop 20 0 1 6 .
   notify: restart webapp
 
+- name: Perform schema migrations
+  shell: SOUNDLOCALE_CONFIG=configuration_vagrant /vagrant/migrate.py

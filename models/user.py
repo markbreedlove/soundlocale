@@ -27,10 +27,10 @@ import ourcrypto
 
 class User(BaseModel):
     id = peewee.BigIntegerField(primary_key=True)
-    username = peewee.CharField()
+    username = peewee.CharField(unique=True)
     fullname = peewee.CharField()
     password = peewee.CharField()
-    email = peewee.CharField()
+    email = peewee.CharField(unique=True)
     status = peewee.IntegerField()
     auth_token = peewee.CharField(null=True, unique=True)
     created = peewee.IntegerField()
