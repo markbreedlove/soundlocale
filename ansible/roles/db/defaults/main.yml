@@ -3,8 +3,4 @@
 pg_max_connections: 50
 kernel_shmmax: 20971520
 
-postgresql_user:
-    name:     vagrant
-    password: vagrant
-
 pg_backup_keep_days: 14

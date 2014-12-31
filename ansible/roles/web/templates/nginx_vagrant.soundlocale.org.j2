@@ -6,7 +6,11 @@ server {
 	root /var/empty;
 
     location /static/ {
-        alias /vagrant/static/;
+        alias /srv/www/soundlocale/static/;
+    }
+
+    location /storage/ {
+        alias /soundfiles/;
     }
 
     location / {

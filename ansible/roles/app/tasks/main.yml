@@ -11,22 +11,37 @@
     - python-dev
     - postgresql-server-dev-9.3
 
+- name: Ensure existence of app user
+  user: >-
+      name=app comment="DPLA application user"
+      home=/home/app shell=/bin/bash state=present
+  tags:
+    - users
+
+# Essential Directories
+- file: path=/srv/www state=directory owner=root group=root mode=0755
+- file: path=/srv/www/soundlocale state=directory owner=app group=app mode=0755
+- file: path=/var/log/soundlocale state=directory owner=app group=app mode=0750
+- file: path=/soundfiles state=directory owner=app group=app mode=0755
+
 # Pip packages
 - pip: requirements=/vagrant/requirements.txt
 
 - name: Install python audiotools if necessary
   script: install-audiotools.sh
 
+- name: Ensure state of startup script
+  template: >-
+    src=start_soundlocale.sh.j2 dest=/usr/local/sbin/start_soundlocale.sh
+    owner=root group=root mode=0755
+
 - name: Update init script for web app
   template: src="init_soundlocale.j2" dest="/etc/init.d/soundlocale"
-  notify: restart webapp
 
 - name: Set ownership and mode of web app init script
   file: path=/etc/init.d/soundlocale owner=root group=root mode=0755
 
 - name: Symlink init script for web app
-  command: update-rc.d soundlocale start 20 2 3 4 5 . stop 20 0 1 6 .
-  notify: restart webapp
+  command: update-rc.d soundlocale defaults
 
-- name: Perform schema migrations
-  shell: SOUNDLOCALE_CONFIG=configuration_vagrant /vagrant/migrate.py
+- include: deploy.yml

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+USERNAME="app"
+APP_ROOT="/srv/www/soundlocale"
+IF="{{ hostvars[inventory_hostname][internal_network_interface]['ipv4']['address'] }}"
+PORT="{{ appserver_port }}"
+OPTS="-i $IF -p $PORT -l /var/log/soundlocale/soundlocale.log --pidfile=/tmp/soundlocale.pid"
+
+cd /srv/www/soundlocale
+nohup ./gevent_wsgi.py $OPTS >> /var/log/soundlocale/nohup.out 2>&1 &

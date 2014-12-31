@@ -61,8 +61,8 @@ def main(argv):
     if pidfile:
         with open(pidfile, 'w') as f:
             f.write(str(os.getpid()))
-        signal.signal(signal.SIGTERM, signal_handler)
-        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, shutdown_handler)
+        signal.signal(signal.SIGINT, shutdown_handler)
     http_server = WSGIServer((interface, port), application=app, log=log)
     try:
         http_server.serve_forever()
@@ -76,7 +76,7 @@ def clean_pidfile():
     except:
         pass
 
-def signal_handler(signum, frame):
+def shutdown_handler(signum, frame):
     clean_pidfile()
     sys.exit()
 

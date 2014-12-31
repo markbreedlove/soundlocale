@@ -9,3 +9,5 @@
   vars:
     dbserver_ipaddr: 192.168.50.6
     appserver_ipaddr: 192.168.50.5
+  vars_files:
+    - ["vars/local.yml"]

@@ -23,6 +23,7 @@
   with_items:
     - make  
     - curl
+    - git
 
 - name: Get rid of packages we don't want
   apt: >-

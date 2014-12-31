@@ -1,48 +1,94 @@
-#!/bin/sh
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides: soundlocale
+# Required-Start: $all
+# Required-Stop: $network $local_fs $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Start/stop soundlocale
+# Description: Start/stop soundlocale Flask application
+### END INIT INFO
 
-# For Debian / Ubuntu
-
-
-NAME=soundlocale
-DAEMON=/vagrant/gevent_wsgi.py
-APPDIR=/vagrant
-NETWORK_IF={{ hostvars[inventory_hostname][internal_network_interface]['ipv4']['address'] }}
-PORT={{ appserver_port }}
-USER={{ appserver_user }}
-UGID=$(getent passwd $RUNASUSER | cut -f 3,4 -d:) || true
-pidfile=/home/vagrant/$NAME.pid
-logfile=/home/vagrant/$NAME.log
-
-test -x $DAEMON || exit 1
+set -u
+set -e
 
 . /lib/lsb/init-functions
 
-start() {
-    log_daemon_msg "Starting soundlocale web application" "soundlocale"
-    if [ -z "$UGID" ]; then
-        log_failure_msg "user \"$USER\" does not exist"
-        exit 1
-    fi
-    export SOUNDLOCALE_CONFIG="configuration_vagrant"
-    start-stop-daemon -b --start -d $APPDIR -c $USER --exec $DAEMON \
-        --pidfile $pidfile -- -p $PORT --pidfile $pidfile -l $logfile \
-        -i $NETWORK_IF
+USERNAME="app"
+APP_NAME="soundlocale"
+APP_ROOT="/srv/www/soundlocale"
+START_SCRIPT="/usr/local/sbin/start_soundlocale.sh"
+
+pidfile="/var/run/soundlocale/soundlocale.pid"
+
+usage() {
+    echo >&2 "Usage: $0 <start|stop|restart|force-stop|status|usage>"
 }
 
-stop() {
-    start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile $pidfile
+sig () {
+    test -s "$pidfile" && kill -$1 `cat $pidfile`
+}
+
+have_good_pidfile() {
+    if [ -s "$pidfile" ]; then
+        kill -0 `cat $pidfile` 2>/dev/null
+        if [ $? -ne 0 ]; then
+            return 1
+        else
+            return 0
+        fi
+    else
+        return 1
+    fi
+}
+
+rmpid() {
+    rm -f $pidfile
 }
 
 case $1 in
-    start)
-        start
-        ;;
-    stop)
-        stop
-        ;;
-    restart|reload)
-        stop
-        start
-        ;;
+start)
+    sig 0 && echo >&2 "Already running." && exit 0
+    if [ "$(whoami)" != "$USERNAME" ]; then
+        su - $USERNAME -c "$START_SCRIPT"
+    else
+        bash -lc "$START_SCRIPT"
+    fi
+    ;;
+stop)
+    sig TERM && exit 0
+    echo >&2 "Not running."
+    ;;
+force-stop)
+    sig KILL && exit 0
+    echo >&2 "Not running."
+    ;;
+restart|reload)
+    if have_good_pidfile; then
+        sig TERM
+        if [ $? -ne 0 ]; then
+            echo >&2 "Can't stop running process."
+            exit 1
+        fi
+    else
+        rmpid
+        echo >&2 "Couldn't reload.  Starting instead."
+    fi
+    if [ "$(whoami)" != "$USERNAME" ]; then
+        su - $USERNAME -c "$START_SCRIPT"
+    else
+        bash -lc "$START_SCRIPT"
+    fi
+    ;;
+status)
+    status_of_proc -p $pidfile python $APP_NAME && exit 0 || exit $?
+    ;;
+usage)
+    usage
+    exit 0
+    ;;
+*)
+    usage
+    exit 1
+    ;;
 esac
-

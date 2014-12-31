@@ -1,0 +1,38 @@
+---
+
+- include_vars: "../vars/{{ level }}.yml"
+  when: level is defined
+  tags:
+    - deployment
+
+- name: Check out app from its repository
+  git: >
+      repo=https://github.com/markbreedlove/soundlocale.git
+      dest=/home/app/soundlocale
+      version={{ app_branch_or_tag | default("master") }}
+  sudo_user: app
+  when: not use_local_source
+  tags:
+    - deployment
+
+- name: Sync app from /vagrant directory to build directory
+  script: copy_local_app.sh
+  when: use_local_source
+  tags:
+    - deployment
+
+- name: Update configuration file
+  template: >-
+    src=configuration.py.j2 dest=/home/app/soundlocale/configuration.py
+    owner=app group=app mode=0640
+  tags:
+    - deployment
+
+- name: Build app
+  script: build.sh
+  notify: restart webapp
+  sudo_user: app
+  tags:
+    - deployment
+
+- meta: flush_handlers

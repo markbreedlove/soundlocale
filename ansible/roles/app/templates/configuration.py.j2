@@ -1,0 +1,28 @@
+DEBUG = True
+
+LOGFILE = '/srv/www/soundlocale/soundlocale.log'
+
+DB_HOST = '{{ dbserver_ipaddr }}'
+DB_NAME = 'soundlocale'
+DB_USER = '{{ postgresql_user.name }}'
+DB_PASSWORD = '{{ postgresql_user.password }}'
+
+
+STORAGE = {
+    'container_1': {
+        'base_url': '{{ app_base_storage_url }}',
+        'fs_path': '/soundfiles/'
+    }
+}
+
+SIGNING_KEY = '{{ app_signing_key }}'
+
+SECRET_KEY = '{{ app_secret_key }}'
+
+MAIL_DEBUG = {{ 'True' if app_mail_debug else 'False' }}
+MAIL_SERVER = '{{ app_mail_server }}'
+MAIL_PORT = {{ app_mail_port }}
+MAIL_USE_TLS = {{ 'True' if app_mail_use_tls else 'False' }}
+MAIL_USERNAME = '{{ app_mail_username }}'
+MAIL_PASSWORD = '{{ app_mail_password }}'
+DEFAULT_MAIL_SENDER = '{{ app_default_mail_sender }}'

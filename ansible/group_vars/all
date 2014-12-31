@@ -1,2 +1,22 @@
 
+
 internal_network_interface: ansible_eth1
+
+postgresql_user:
+    name:     vagrant
+    password: vagrant
+
+app_base_storage_url: http://vagrant.soundlocale.org/storage/
+
+## OVERRIDE the following in ../vars/local.yml
+#
+app_mail_debug: no
+app_mail_server: changeme
+app_mail_port: 587
+app_mail_use_tls: yes
+app_mail_username: you@example.com
+app_mail_password: changeme
+app_default_mail_sender: you@example.com
+app_signing_key: eir2uw9cifjwfu28e7fhxu
+app_secret_key: thiswouldbesomethingelesforarealsite
+

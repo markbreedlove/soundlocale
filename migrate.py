@@ -14,7 +14,7 @@ from playhouse.migrate import *
 from models import db
 from models.user import User
 from models.sound import Sound
-from models.migration_log import MigrationLog
+# from models.migration_log import MigrationLog
 
 db.init(app.config['DB_NAME'],
         **{'password': app.config['DB_PASSWORD'],
