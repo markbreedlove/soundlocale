@@ -6,14 +6,6 @@
 - name: Update hosts file
   template: src="hosts.j2" dest="/etc/hosts"
 
-- name: Ensure availability of Ubuntu multiverse
-  # Needed for faac & faad packages
-  apt_repository: >-
-    repo='deb http://archive.ubuntu.com/ubuntu trusty multiverse' state=present
-- name: Ensure availability of Ubuntu multiverse updates
-  apt_repository: >-
-    repo='deb http://archive.ubuntu.com/ubuntu trusty-updates multiverse' state=present
-
 - name: Upgrade apt packages
   apt: upgrade=safe update_cache=yes
 

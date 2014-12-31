@@ -11,12 +11,16 @@ Cambridge, MA by Qingyang Xi, and has been developed thus far by Mark Breedlove.
 
 Dependencies
 ------------
+
 Install the dependencies in requirements.txt:
 ```
 $ pip install -r requirements.txt
 ```
-Install the binaries for transcoding Vorbis, AAC, and MP3: faac, faad, mpg123,
-oggdec, and oggenc; then, install audiotools (audiotools.sourceforge.net)
+
+Soundlocale relies on `avconv`, which is part of the `Libav` fork of `ffmpeg`.
+On Debian / Ubuntu, this is part of the `libav-tools` package.  You will also
+need the `libvo-aacenc0` package for transcoding AAC.  See the provided Vagrant /
+VirtualBox VM, which runs Ubuntu 14.01 and resolves all of the dependencies.
 
 Testing and Development with Vagrant
 ------------------------------------

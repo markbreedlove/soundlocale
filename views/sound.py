@@ -12,7 +12,8 @@ from flask import jsonify, request
 from os import unlink
 import simpleflake
 import re
-import audiotools
+import subprocess
+from distutils import spawn
 import models.sound as sound
 import models.user as user
 # from util import form_or_json, async
@@ -44,13 +45,13 @@ def add_sound():
         flags = 0
         flags |= (looping and sound.LOOPING)
         container = 'container_1'
-        file = request.files['soundfile']
-        type = filetype(file.filename)
-        (filename, base) = unique_filename(file.filename)
+        soundfile = request.files['soundfile']
+        ftype = filetype(soundfile.filename)
+        (filename, base) = unique_filename(soundfile.filename)
         fullpath = app.config['STORAGE'][container]['fs_path'] + filename
-        file.save(fullpath)
+        soundfile.save(fullpath)
 
-        flags |= transcode(fullpath, type)
+        flags |= transcode(fullpath, ftype)
 
         new_sound = sound.add_sound(lat=lat, lng=lng, title=title,
                                     basename=str(base), container=container,
@@ -90,8 +91,9 @@ def transcode(filename, orig_file_type):
             return sound.MP3 | sound.OGG
         else:
             return sound.M4A | sound.OGG
-    except ValueError as e:
-        app.logger.warn('Could not process file: ' + e.message)
+    except:
+        app.logger.warn('avconv not process %s file %s' % (orig_file_type,
+                                                           filename))
         raise BadRequestError('Could not process this file')
 
 # @async
@@ -118,12 +120,18 @@ def _transcode(filename, orig_file_type):
 
 def transcode_to_ogg(filename):
     dest_name = re.sub(r'^(.*)\.[a-z34]+$', r'\1.ogg', filename)
-    audiotools.open(filename).convert(dest_name, audiotools.VorbisAudio)
+    _call_avconv(filename, dest_name)
 
 def transcode_to_m4a(filename):
     dest_name = re.sub(r'^(.*)\.[a-z34]+$', r'\1.m4a', filename)
-    audiotools.open(filename).convert(dest_name, audiotools.M4AAudio)
+    _call_avconv(filename, dest_name, ['-strict', 'experimental'])
 
+def _call_avconv(infile, outfile, extra_args=None):
+    avconv = spawn.find_executable('avconv')
+    extra_args = extra_args or []
+    opts = [avconv, '-i', infile] + extra_args + [outfile]
+    with open('/dev/null', 'w') as devnull:
+        subprocess.check_call(opts, stderr=devnull)
 
 @app.route('/sound/<int:id>.json')
 def view_sound(id):

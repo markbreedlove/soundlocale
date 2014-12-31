@@ -1,12 +1,11 @@
 ---
 
 - name: Install packages
-  apt: pkg={{ item }} state=present
+  apt: >-
+    pkg={{ item }} state=present
   with_items:
-    - vorbis-tools
-    # faac and faad are in Ubuntu 'multiverse'
-    - faac
-    - faad
+    - libav-tools
+    - libvo-aacenc0
     - python-pip
     - python-dev
     - postgresql-server-dev-9.3
@@ -26,9 +25,6 @@
 
 # Pip packages
 - pip: requirements=/vagrant/requirements.txt
-
-- name: Install python audiotools if necessary
-  script: install-audiotools.sh
 
 - name: Ensure state of startup script
   template: >-
