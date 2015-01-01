@@ -3,7 +3,8 @@ server {
 
     listen {{ http_port }};
     server_name vagrant.soundlocale.org;
-	root /var/empty;
+    root /var/empty;
+    client_max_body_size 20M;
 
     location /static/ {
         alias /srv/www/soundlocale/static/;
