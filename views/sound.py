@@ -120,11 +120,11 @@ def _transcode(filename, orig_file_type):
 
 def transcode_to_ogg(filename):
     dest_name = re.sub(r'^(.*)\.[a-z34]+$', r'\1.ogg', filename)
-    _call_avconv(filename, dest_name)
+    _call_avconv(filename, dest_name, ['-acodec', 'libvorbis', '-q:a', '7'])
 
 def transcode_to_m4a(filename):
     dest_name = re.sub(r'^(.*)\.[a-z34]+$', r'\1.m4a', filename)
-    _call_avconv(filename, dest_name, ['-strict', 'experimental'])
+    _call_avconv(filename, dest_name, ['-strict', 'experimental', '-vbr', '5'])
 
 def _call_avconv(infile, outfile, extra_args=None):
     avconv = spawn.find_executable('avconv')
