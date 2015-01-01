@@ -32,11 +32,6 @@ $ vagrant up
 Reboot the server because kernel packages will probably have been updated:
 $ vagrant reload
 
-Make sure the app is running.  This is something I'll fix, but it doesn't start
-on reboot.
-$ vagrant ssh
-vagrant@allinone:~$ sudo service soundlocale start
-
 In your browser, go to:
 http://vagrant.soundlocale.org/
 
