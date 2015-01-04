@@ -24,7 +24,8 @@
 - file: path=/soundfiles state=directory owner=app group=app mode=0755
 
 # Pip packages
-- pip: requirements=/vagrant/requirements.txt
+- copy: src=../../../../requirements.txt dest=/tmp/requirements.txt
+- pip: requirements=/tmp/requirements.txt
 
 - name: Ensure state of startup script
   template: >-
