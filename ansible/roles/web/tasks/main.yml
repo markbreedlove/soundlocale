@@ -1,5 +1,8 @@
 ---
 
+- include_vars: "../vars/{{ level }}.yml"
+  when: level is defined
+
 - name: Install packages
   apt: pkg={{ item }} state=present
   with_items:

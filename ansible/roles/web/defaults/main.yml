@@ -1,0 +1,4 @@
+---
+
+http_port: 80
+server_name: vagrant.soundlocale.com
