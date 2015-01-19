@@ -13,9 +13,12 @@
   notify: restart nginx
 
 - name: Update nginx site file with server directive
-  template: src=nginx_vagrant.soundlocale.org.j2 dest=/etc/nginx/sites-available/vagrant.soundlocale.org
+  template: src=nginx_soundlocale.org.j2 dest=/etc/nginx/sites-available/soundlocale.org
   notify: restart nginx
 
 - name: Symlink nginx site file with server directive
-  command: sh -c 'cd /etc/nginx/sites-enabled && ln -sf ../sites-available/vagrant.soundlocale.org vagrant.soundlocale.org'
+  file: >-
+    src=/etc/nginx/sites-available/soundlocale.org
+    dest=/etc/nginx/sites-enabled/soundlocale.org
+    state=link owner=root group=root
 

@@ -1,7 +1,7 @@
 
 server {
 
-    listen {{ http_port }};
+    listen {{ webserver_ipaddr }}:{{ http_port }};
     server_name {{ server_name }};
     root /var/empty;
     client_max_body_size 20M;
